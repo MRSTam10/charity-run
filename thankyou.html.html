@@ -90,25 +90,35 @@
   }
 
   .btn-container {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
   }
 
-  .home-btn {
+  .upload-btn {
     display: inline-block;
     background-color: var(--primary-color);
     color: white;
-    padding: 14px 32px;
-    font-size: 12pt;
+    padding: 16px 32px;
+    font-size: 13pt;
     font-weight: bold;
     text-decoration: none;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 168, 143, 0.3);
     transition: all 0.3s ease;
+    width: 80%;
   }
 
-  .home-btn:hover {
+  .upload-btn:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
+  }
+
+  .home-link {
+    color: #777;
+    text-decoration: underline;
+    font-size: 10pt;
   }
 </style>
 </head>
@@ -132,12 +142,14 @@
     
     <div class="message">
       <p>感謝您參加「走進美山暨小謙謙慈善挑戰賽」。</p>
-      <p>我們已收到您的報名資料，核對無誤後將會透過電郵與您聯絡確認手續。</p>
-      <p style="font-size: 10pt; color: #888; margin-top: 15px;">Thank you for your warm support to little Tam Tam!</p>
+      <p><strong>最後一步：</strong>請點擊下方按鈕前往 Google 表單，上傳您的轉帳/付款收據截圖以完成報名。</p>
     </div>
 
     <div class="btn-container">
-      <a href="index.html" class="home-btn">返回賽事主頁 (Return to Homepage)</a>
+      <a href="https://forms.gle/qoun6rB6RgNiccnL8" class="upload-btn">
+        👉 前往上傳付款證明 (Upload Payment Receipt)
+      </a>
+      <a href="index.html" class="home-link">返回賽事主頁 (Return to Homepage)</a>
     </div>
   </div>
 </div>
