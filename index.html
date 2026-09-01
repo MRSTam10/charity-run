@@ -91,41 +91,12 @@
     margin-bottom: 20px;
   }
 
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  .form-row {
-    display: flex;
-    gap: 15px;
-  }
-
-  .form-row .form-group {
-    flex: 1;
-  }
-
-  .form-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-
-  .form-group input, .form-group select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 11pt;
-  }
-
   .payment-box {
     background-color: #e8f8f5;
     border: 2px dashed var(--primary-color);
     border-radius: 8px;
     padding: 20px;
     text-align: center;
-    margin-top: 20px;
   }
 
   .payment-qr {
@@ -141,28 +112,28 @@
     color: #e74c3c;
   }
 
-  .submit-btn {
+  .btn-container {
+    text-align: center;
+    margin-top: 25px;
+  }
+
+  .form-btn {
+    display: inline-block;
     background-color: var(--primary-color);
     color: white;
-    border: none;
-    width: 100%;
-    padding: 15px;
+    padding: 16px 32px;
     font-size: 14pt;
     font-weight: bold;
+    text-decoration: none;
     border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 168, 143, 0.3);
+    transition: all 0.3s ease;
   }
 
-  .submit-btn:hover {
+  .form-btn:hover {
     background-color: var(--primary-dark);
-  }
-
-  @media (max-width: 600px) {
-    .form-row {
-      flex-direction: column;
-      gap: 0;
-    }
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 168, 143, 0.4);
   }
 </style>
 </head>
@@ -193,78 +164,25 @@
     <p>這項比賽不單限於一般的運動場跑道，我們將帶領每一位參加者步出市區，走進美麗的山河與大自然之中。在山水包羅萬象的考驗下，讓跑手們踏出舒適圈、跨越自己的極限——這正是「走進美山、超越自我」的真正意義。</p>
   </div>
 
-  <!-- 報名表格卡片 -->
+  <!-- 付款說明卡片 -->
   <div class="card">
-    <div class="section-title">Registration Form / 報名資料</div>
-    <form action="https://formspree.io/f/xnpqjeoz" method="POST" enctype="multipart/form-data">
+    <div class="section-title">Payment Details / 付款詳情</div>
+    <div class="payment-box">
+      <p style="margin: 0; font-size: 12pt;">Registration Fee / 報名費用：</p>
+      <div class="price-tag">HK$ 980</div>
       
-      <!-- 中文姓名（拆分姓與名） -->
-      <div class="form-row">
-        <div class="form-group">
-          <label>中文姓氏 / Chinese Surname *</label>
-          <input type="text" name="chinese_surname" required placeholder="例如: 陳">
-        </div>
-        <div class="form-group">
-          <label>中文名字 / Chinese Given Name *</label>
-          <input type="text" name="chinese_given_name" required placeholder="例如: 大文">
-        </div>
+      <div style="margin: 15px 0;">
+        <img src="paycode.png" alt="Payment QR Code" class="payment-qr">
       </div>
+      <p style="margin: 0; font-size: 10.5pt; color: #555;">請先掃描 QR Code 完成轉帳，並截圖保存付款證明。<br>完成付款後，請點擊下方按鈕填寫報名表格並上傳截圖。</p>
+    </div>
 
-      <!-- 英文姓名（拆分姓與名） -->
-      <div class="form-row">
-        <div class="form-group">
-          <label>英文姓氏 / English Surname *</label>
-          <input type="text" name="english_surname" required placeholder="e.g. CHAN">
-        </div>
-        <div class="form-group">
-          <label>英文名字 / English Given Name *</label>
-          <input type="text" name="english_given_name" required placeholder="e.g. Tai Man">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>出生日期 / Date of Birth *</label>
-        <input type="date" name="dob" required>
-      </div>
-
-      <div class="form-group">
-        <label>電話號碼 / Phone Number *</label>
-        <input type="tel" name="phone" required placeholder="例如: 91234567">
-      </div>
-
-      <div class="form-group">
-        <label>電郵地址 / Email Address *</label>
-        <input type="email" name="email" required placeholder="example@email.com">
-      </div>
-
-      <div class="form-group">
-        <label>緊急聯絡人姓名 / Emergency Contact Name *</label>
-        <input type="text" name="emergency_name" required placeholder="請輸入緊急聯絡人姓名">
-      </div>
-
-      <div class="form-group">
-        <label>緊急聯絡人電話 / Emergency Contact Phone *</label>
-        <input type="tel" name="emergency_phone" required placeholder="請輸入緊急聯絡人電話">
-      </div>
-
-      <div class="section-title" style="margin-top: 30px;">Payment Details / 付款詳情</div>
-      <div class="payment-box">
-        <p style="margin: 0; font-size: 12pt;">Registration Fee / 報名費用：</p>
-        <div class="price-tag">HK$ 980</div>
-        
-        <div style="margin: 15px 0;">
-          <img src="paycode.png" alt="Payment QR Code" class="payment-qr">
-        </div>
-
-        <div class="form-group" style="text-align: left; margin-top: 15px;">
-          <label>Upload Payment Receipt / 上傳付款證明 *</label>
-          <input type="file" name="payment_proof" accept="image/*" required>
-        </div>
-      </div>
-
-      <br>
-      <button type="submit" class="submit-btn">Submit Registration / 確認並提交報名</button>
-    </form>
+    <!-- 報名按鈕區塊 -->
+    <div class="btn-container">
+      <a href="https://forms.gle/qoun6rB6RgNiccnL8" target="_blank" class="form-btn">
+        👉 點此前往填寫報名表 (Open Registration Form)
+      </a>
+    </div>
   </div>
 </div>
 
