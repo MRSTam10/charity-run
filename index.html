@@ -29,15 +29,43 @@
     padding: 40px 20px;
   }
 
+  /* 英文標題樣式（分三行，第一及第三行加粗） */
   .header-banner h1 {
-    margin: 0 0 10px 0;
-    font-size: 24pt;
+    margin: 0 0 15px 0;
+    font-size: 22pt;
+    line-height: 1.3;
+    font-weight: normal;
   }
 
+  .header-banner h1 .title-line-1 {
+    font-weight: bold;
+    display: block;
+  }
+
+  .header-banner h1 .title-line-2 {
+    font-weight: normal;
+    display: block;
+  }
+
+  .header-banner h1 .title-line-3 {
+    font-weight: bold;
+    display: block;
+  }
+
+  /* 中文標題樣式（「走進美山」與「小謙謙慈善挑戰賽」加粗，唯獨「暨」保持一般字體） */
   .header-banner p {
     margin: 0;
     font-size: 14pt;
-    opacity: 0.9;
+    opacity: 0.95;
+    font-weight: normal;
+  }
+
+  .header-banner p .zh-bold {
+    font-weight: bold;
+  }
+
+  .header-banner p .zh-normal {
+    font-weight: normal;
   }
 
   .container {
@@ -65,6 +93,15 @@
 
   .form-group {
     margin-bottom: 20px;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 15px;
+  }
+
+  .form-row .form-group {
+    flex: 1;
   }
 
   .form-group label {
@@ -120,17 +157,30 @@
   .submit-btn:hover {
     background-color: var(--primary-dark);
   }
+
+  @media (max-width: 600px) {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
 </style>
 </head>
 <body>
 
 <div class="header-banner">
-  <h1>Run to Mei Shan cum little Tam Tam Charity Challenge</h1>
-  <p>走進美山暨小謙謙慈善挑戰賽</p>
+  <h1>
+    <span class="title-line-1">Run to Mei Shan</span>
+    <span class="title-line-2">cum</span>
+    <span class="title-line-3">little Tam Tam Charity Challenge</span>
+  </h1>
+  <p>
+    <span class="zh-bold">走進美山</span><span class="zh-normal">暨</span><span class="zh-bold">小謙謙慈善挑戰賽</span>
+  </p>
 </div>
 
 <div class="container">
-  <!-- 簡介卡片（已更改為先英文後中文） -->
+  <!-- 簡介卡片 -->
   <div class="card">
     <div class="section-title">Event Introduction / 賽事簡介</div>
     <p><strong>【Run to Mei Shan cum little Tam Tam Charity Challenge】</strong></p>
@@ -148,33 +198,52 @@
     <div class="section-title">Registration Form / 報名資料</div>
     <form action="https://formspree.io/f/xnpqjeoz" method="POST" enctype="multipart/form-data">
       
-      <div class="form-group">
-        <label>Chinese Name / 中文姓名 *</label>
-        <input type="text" name="name" required placeholder="請輸入中文全名">
+      <!-- 中文姓名（拆分姓與名） -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>中文姓氏 / Chinese Surname *</label>
+          <input type="text" name="chinese_surname" required placeholder="例如: 陳">
+        </div>
+        <div class="form-group">
+          <label>中文名字 / Chinese Given Name *</label>
+          <input type="text" name="chinese_given_name" required placeholder="例如: 大文">
+        </div>
+      </div>
+
+      <!-- 英文姓名（拆分姓與名） -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>英文姓氏 / English Surname *</label>
+          <input type="text" name="english_surname" required placeholder="e.g. CHAN">
+        </div>
+        <div class="form-group">
+          <label>英文名字 / English Given Name *</label>
+          <input type="text" name="english_given_name" required placeholder="e.g. Tai Man">
+        </div>
       </div>
 
       <div class="form-group">
-        <label>Date of Birth / 出生日期 *</label>
+        <label>出生日期 / Date of Birth *</label>
         <input type="date" name="dob" required>
       </div>
 
       <div class="form-group">
-        <label>Phone Number / 電話號碼 *</label>
+        <label>電話號碼 / Phone Number *</label>
         <input type="tel" name="phone" required placeholder="例如: 91234567">
       </div>
 
       <div class="form-group">
-        <label>Email Address / 電郵地址 *</label>
+        <label>電郵地址 / Email Address *</label>
         <input type="email" name="email" required placeholder="example@email.com">
       </div>
 
       <div class="form-group">
-        <label>Emergency Contact Name / 緊急聯絡人姓名 *</label>
+        <label>緊急聯絡人姓名 / Emergency Contact Name *</label>
         <input type="text" name="emergency_name" required placeholder="請輸入緊急聯絡人姓名">
       </div>
 
       <div class="form-group">
-        <label>Emergency Contact Phone / 緊急聯絡人電話 *</label>
+        <label>緊急聯絡人電話 / Emergency Contact Phone *</label>
         <input type="tel" name="emergency_phone" required placeholder="請輸入緊急聯絡人電話">
       </div>
 
@@ -183,7 +252,6 @@
         <p style="margin: 0; font-size: 12pt;">Registration Fee / 報名費用：</p>
         <div class="price-tag">HK$ 980</div>
         
-        <!-- QR Code 顯示區 -->
         <div style="margin: 15px 0;">
           <img src="paycode.png" alt="Payment QR Code" class="payment-qr">
         </div>
