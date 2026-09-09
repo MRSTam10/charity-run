@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIA | HYROX Hong Kong 2027 — Official Athlete Pass</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Inter:wght@300;400;600;800&display=swap');
+
+    :root {
+      --bg-black: #050505;
+      --card-black: #111111;
+      --card-border: #282828;
+      --text-white: #FFFFFF;
+      --text-grey: #8E8E93;
+      --light-grey: #E5E5EA;
+      --accent-grey: #2C2C2E;
+      --font-mono: 'Chakra Petch', sans-serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-black);
+      color: var(--text-white);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 60px;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08) 0%, transparent 60%),
+        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+    }
+
+    /* Top Hero Skyline Banner */
+    .hero-banner {
+      width: 100%;
+      max-width: 480px;
+      height: 160px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: -20px;
+    }
+
+    .hero-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: grayscale(100%) contrast(110%);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(5,5,5,0.2) 0%, rgba(5,5,5,0.9) 100%);
+    }
+
+    /* Top Brand Header */
+    .top-brand {
+      width: min(100%, 480px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 20px 10px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-logo {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-logo span {
+      background: var(--text-white);
+      color: var(--bg-black);
+      padding: 2px 6px;
+      font-size: 0.8rem;
+      border-radius: 2px;
+    }
+
+    .hk-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-grey);
+      letter-spacing: 1px;
+    }
+
+    /* Ticket / Boarding Pass Container */
+    .ticket-card {
+      width: min(calc(100% - 32px), 480px);
+      background: var(--card-black);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(255,255,255,0.03);
+      position: relative;
+      z-index: 3;
+    }
+
+    /* Ticket Top Header */
+    .ticket-header {
+      background: linear-gradient(180deg, #1A1A1A 0%, #111111 100%);
+      padding: 24px 24px 18px;
+      border-bottom: 1px dashed #2A2A2A;
+      position: relative;
+    }
+
+    .event-title {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-grey);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .flight-route {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 12px 0;
+    }
+
+    .airport-code {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .airport-code h2 {
+      font-family: var(--font-mono);
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: 1px;
+    }
+
+    .airport-code span {
+      font-size: 0.75rem;
+      color: var(--text-grey);
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .flight-path {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .flight-line {
+      width: 100%;
+      height: 1px;
+      background: #444;
+      position: relative;
+      margin-bottom: 4px;
+    }
+
+    .flight-line::before, .flight-line::after {
+      content: '';
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: var(--text-white);
+      border-radius: 50%;
+      top: -2px;
+    }
+
+    .flight-line::before { left: 0; }
+    .flight-line::after { right: 0; }
+
+    .icon-hyrox {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-grey);
+      letter-spacing: 1px;
+    }
+
+    /* Countdown Boarding Section */
+    .countdown-section {
+      padding: 20px 24px;
+      background: #0A0A0A;
+      border-bottom: 1px dashed #2A2A2A;
+      text-align: center;
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-grey);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .timer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .timer-box {
+      background: var(--card-black);
+      border: 1px solid var(--card-border);
+      padding: 10px 4px;
+      border-radius: 8px;
+    }
+
+    .timer-val {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-white);
+      line-height: 1;
+    }
+
+    .timer-lbl {
+      font-size: 0.65rem;
+      color: var(--text-grey);
+      text-transform: uppercase;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    /* Ticket Body Details */
+    .ticket-body {
+      padding: 24px;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-label {
+      font-size: 0.7rem;
+      color: var(--text-grey);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .meta-val {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-white);
+    }
+
+    /* Boarding Pass Tear Notch Effect */
+    .tear-line {
+      position: relative;
+      height: 20px;
+      background: var(--card-black);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .notch-left, .notch-right {
+      width: 20px;
+      height: 20px;
+      background-color: var(--bg-black);
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+    }
+
+    .notch-left { left: -10px; border-right: 1px solid var(--card-border); }
+    .notch-right { right: -10px; border-left: 1px solid var(--card-border); }
+
+    .dashed-divider {
+      width: 100%;
+      margin: 0 16px;
+      border-top: 1px dashed var(--card-border);
+    }
+
+    /* Ticket Stub / Barcode Section */
+    .ticket-stub {
+      padding: 20px 24px 28px;
+      background: #0E0E0E;
+      text-align: center;
+    }
+
+    .barcode-container {
+      background: #FFFFFF;
+      padding: 16px 12px 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+    }
+
+    .barcode-svg {
+      width: 100%;
+      height: 50px;
+      display: block;
+    }
+
+    .barcode-num {
+      font-family: var(--font-mono);
+      color: #000;
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      margin-top: 4px;
+      font-weight: 700;
+    }
+
+    /* CTA Buttons & Check-in PDF Section */
+    .action-container {
+      width: min(calc(100% - 32px), 480px);
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .checkin-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-grey);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .action-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-checkin {
+      background: #1C1C1E;
+      color: var(--text-white);
+      border: 1px solid #3A3A3C;
+    }
+
+    .btn-checkin:hover {
+      background: #2C2C2E;
+      border-color: #555;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.7rem;
+      color: var(--text-grey);
+      text-align: center;
+      font-family: var(--font-mono);
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Hero Skyline Image -->
+  <div class="hero-banner">
+    <img src="image.jpg" alt="Hong Kong Skyline">
+    <div class="hero-overlay"></div>
+  </div>
+
+  <!-- Top Brand Navigation -->
+  <header class="top-brand">
+    <div class="brand-logo">
+      <span>AIA</span> HYROX
+    </div>
+    <div class="hk-tag">
+      HKG // SEASON 26/27
+    </div>
+  </header>
+
+  <!-- Boarding Pass Ticket Container -->
+  <main class="ticket-card">
+    
+    <!-- Header Route Info -->
+    <div class="ticket-header">
+      <div class="event-title">Official Athlete Boarding Pass</div>
+      <div class="flight-route">
+        <div class="airport-code">
+          <h2>HKG</h2>
+          <span>Hong Kong</span>
+        </div>
+        <div class="flight-path">
+          <div class="flight-line"></div>
+          <span class="icon-hyrox">8KM RUN + 8 WORKOUTS</span>
+        </div>
+        <div class="airport-code" style="text-align: right;">
+          <h2>HYR</h2>
+          <span>Finish Line</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Countdown Section -->
+    <div class="countdown-section">
+      <div class="section-label">⚡ Time Remaining to Race Day</div>
+      <div class="timer-grid">
+        <div class="timer-box">
+          <div class="timer-val" id="days">00</div>
+          <div class="timer-lbl">Days</div>
+        </div>
+        <div class="timer-box">
+          <div class="timer-val" id="hours">00</div>
+          <div class="timer-lbl">Hours</div>
+        </div>
+        <div class="timer-box">
+          <div class="timer-val" id="mins">00</div>
+          <div class="timer-lbl">Mins</div>
+        </div>
+        <div class="timer-box">
+          <div class="timer-val" id="secs">00</div>
+          <div class="timer-lbl">Secs</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ticket Details Body -->
+    <div class="ticket-body">
+      <div class="meta-grid">
+        <div class="meta-item">
+          <span class="meta-label">Date & Time</span>
+          <span class="meta-val">09 JAN 2027</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Venue</span>
+          <span class="meta-val">AsiaWorld-Expo</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Category</span>
+          <span class="meta-val">Doubles Mixed</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Status</span>
+          <span class="meta-val">CONFIRMED</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Athlete 1</span>
+          <span class="meta-val">Cheuk Him Tam</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Athlete 2</span>
+          <span class="meta-val">Mei Shan Ho</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ticket Tear-off Divider -->
+    <div class="tear-line">
+      <div class="notch-left"></div>
+      <div class="dashed-divider"></div>
+      <div class="notch-right"></div>
+    </div>
+
+    <!-- Stub & Barcode -->
+    <div class="ticket-stub">
+      <div class="meta-item" style="text-align: center; margin-bottom: 12px;">
+        <span class="meta-label">Pass Identification</span>
+        <span class="meta-val" style="font-size: 0.85rem;">HK2027-HYROX-88902</span>
+      </div>
+
+      <div class="barcode-container">
+        <!-- SVG Barcode representation -->
+        <svg class="barcode-svg" viewBox="0 0 200 40" preserveAspectRatio="none">
+          <rect x="0" width="3" height="40" fill="#000"/>
+          <rect x="5" width="1" height="40" fill="#000"/>
+          <rect x="8" width="4" height="40" fill="#000"/>
+          <rect x="15" width="2" height="40" fill="#000"/>
+          <rect x="20" width="1" height="40" fill="#000"/>
+          <rect x="24" width="5" height="40" fill="#000"/>
+          <rect x="32" width="2" height="40" fill="#000"/>
+          <rect x="37" width="1" height="40" fill="#000"/>
+          <rect x="40" width="3" height="40" fill="#000"/>
+          <rect x="46" width="6" height="40" fill="#000"/>
+          <rect x="54" width="2" height="40" fill="#000"/>
+          <rect x="58" width="1" height="40" fill="#000"/>
+          <rect x="62" width="4" height="40" fill="#000"/>
+          <rect x="68" width="2" height="40" fill="#000"/>
+          <rect x="73" width="5" height="40" fill="#000"/>
+          <rect x="80" width="1" height="40" fill="#000"/>
+          <rect x="84" width="3" height="40" fill="#000"/>
+          <rect x="90" width="2" height="40" fill="#000"/>
+          <rect x="95" width="4" height="40" fill="#000"/>
+          <rect x="102" width="1" height="40" fill="#000"/>
+          <rect x="106" width="5" height="40" fill="#000"/>
+          <rect x="114" width="2" height="40" fill="#000"/>
+          <rect x="118" width="3" height="40" fill="#000"/>
+          <rect x="124" width="1" height="40" fill="#000"/>
+          <rect x="128" width="6" height="40" fill="#000"/>
+          <rect x="136" width="2" height="40" fill="#000"/>
+          <rect x="140" width="4" height="40" fill="#000"/>
+          <rect x="146" width="1" height="40" fill="#000"/>
+          <rect x="150" width="3" height="40" fill="#000"/>
+          <rect x="155" width="5" height="40" fill="#000"/>
+          <rect x="162" width="2" height="40" fill="#000"/>
+          <rect x="166" width="1" height="40" fill="#000"/>
+          <rect x="170" width="4" height="40" fill="#000"/>
+          <rect x="176" width="2" height="40" fill="#000"/>
+          <rect x="180" width="5" height="40" fill="#000"/>
+          <rect x="188" width="1" height="40" fill="#000"/>
+          <rect x="192" width="3" height="40" fill="#000"/>
+          <rect x="197" width="3" height="40" fill="#000"/>
+        </svg>
+        <div class="barcode-num">HKi87xp854</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- External Actions & Check-in PDF Links -->
+  <div class="action-container">
+    <div class="checkin-label">📄 Athlete Check-In Passes</div>
+    
+    <!-- PDF Check-in Buttons -->
+    <div class="action-group">
+      <a href="6a8d6cb0b0c5d0258ea26740.pdf" target="_blank" class="btn btn-checkin">
+        📄 Check-In: Him
+      </a>
+      <a href="6a8d6cb0b0c5d0258ea26742.pdf" target="_blank" class="btn btn-checkin">
+        📄 Check-In: Shan
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    WORLD SERIES OF FITNESS RACING — HONG KONG 2027
+  </footer>
+
+  <script>
+    // Live Countdown Timer logic to 9 Jan 2027 08:00 AM
+    const targetDate = new Date('January 9, 2027 08:00:00').getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance < 0) {
+        document.getElementById('days').innerText = "00";
+        document.getElementById('hours').innerText = "00";
+        document.getElementById('mins').innerText = "00";
+        document.getElementById('secs').innerText = "00";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById('days').innerText = String(days).padStart(2, '0');
+      document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+      document.getElementById('mins').innerText = String(minutes).padStart(2, '0');
+      document.getElementById('secs').innerText = String(seconds).padStart(2, '0');
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+
+</body>
+</html>
