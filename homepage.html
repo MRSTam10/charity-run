@@ -22,6 +22,11 @@
       padding: 90px 0;
       position: relative;
     }
+    .news-container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
     .news-card {
       background: var(--deep);
       color: var(--light);
@@ -117,7 +122,8 @@
 
     <!-- ==================== LATEST NEWS / TEASER SESSION ==================== -->
     <section class="news-section" id="news">
-      <div class="wrap">
+      <div class="wrap news-container">
+        <!-- TOP SECRET CARD -->
         <div class="news-card">
           <span class="news-tag">TOP SECRET // 機密預熱</span>
           <div class="news-header">
@@ -132,6 +138,21 @@
           </div>
           <a class="news-btn" href="./NovRun.html" target="_blank" rel="noreferrer">
             進入神秘預熱專頁 NovRun <span>→</span>
+          </a>
+        </div>
+
+        <!-- HYROX CARD -->
+        <div class="news-card">
+          <span class="news-tag">OFFICIAL ANNOUNCEMENT // 賽事消息</span>
+          <div class="news-header">
+            <h3>AIA HYROX Hong Kong 2027 ⚡</h3>
+            <span class="news-author">發佈者：HYROX 關注組</span>
+          </div>
+          <div class="news-body">
+            <p>View your official pass details and countdown to race day.</p>
+          </div>
+          <a class="news-btn" href="./HyroxHK27.html" target="_blank" rel="noreferrer">
+            View Hyrox Race Pass <span>→</span>
           </a>
         </div>
       </div>
