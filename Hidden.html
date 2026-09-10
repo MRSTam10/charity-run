@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secret Diary // 山徑手記</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Noto+Serif+TC:wght@400;600&display=swap');
+
+    :root {
+      --paper: #f7f3eb;
+      --paper-dark: #ebe3d5;
+      --ink: #2b332c;
+      --soft-ink: #5a665c;
+      --line: #d8cfbc;
+      --margin-red: #e06d63;
+      --accent: #2e5246;
+      --shadow: rgba(0, 0, 0, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: #1a2421;
+      background-image: radial-gradient(#2d3b36 1px, transparent 1px);
+      background-size: 20px 20px;
+      font-family: 'Noto Serif TC', serif;
+      color: var(--ink);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Outer Book Frame */
+    .diary-book {
+      width: min(850px, 100%);
+      min-height: 85vh;
+      background: var(--paper);
+      border-radius: 8px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 0 80px rgba(0,0,0,0.03);
+      position: relative;
+      border: 1px solid var(--paper-dark);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Book Spine Line / Spine Crease Effect */
+    .diary-book::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 60px;
+      width: 2px;
+      background: var(--margin-red);
+      opacity: 0.6;
+      z-index: 2;
+    }
+
+    .diary-book::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 15px;
+      background: linear-gradient(to right, rgba(0,0,0,0.12), transparent);
+      z-index: 3;
+    }
+
+    /* Top Selection Column */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 30px 20px 80px;
+      border-bottom: 2px dashed var(--line);
+      background: rgba(235, 227, 213, 0.3);
+      position: relative;
+      z-index: 4;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .filter-group label {
+      font-family: 'Fraunces', serif;
+      font-size: 14px;
+      color: var(--soft-ink);
+      letter-spacing: 0.05em;
+    }
+
+    select {
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-family: 'Fraunces', serif;
+      font-size: 15px;
+      color: var(--ink);
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    select:hover {
+      border-color: var(--accent);
+    }
+
+    /* Invisible Hidden Action Buttons (+ and -) */
+    .secret-invisible-btn {
+      background: transparent !important;
+      color: transparent !important;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      cursor: default;
+      user-select: none;
+    }
+
+    .secret-invisible-btn:hover,
+    .secret-invisible-btn:focus,
+    .secret-invisible-btn:active {
+      background: transparent !important;
+      color: transparent !important;
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    .secret-add-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 20px;
+    }
+
+    /* Hidden Delete Button next to the date */
+    .secret-del-btn {
+      width: 24px;
+      height: 24px;
+      font-size: 14px;
+      padding: 0;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
+    /* Diary Content Area */
+    .diary-content {
+      flex: 1;
+      padding: 30px 40px 40px 80px;
+      background-image: linear-gradient(var(--line) 1px, transparent 1px);
+      background-size: 100% 32px;
+      line-height: 32px;
+      overflow-y: auto;
+    }
+
+    .entry-card {
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .entry-header {
+      display: flex;
+      align-items: center;
+      line-height: 32px;
+    }
+
+    .entry-date {
+      font-family: 'Fraunces', serif;
+      font-size: 13px;
+      color: var(--margin-red);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .entry-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 0;
+      line-height: 32px;
+    }
+
+    .entry-body {
+      font-size: 15px;
+      color: var(--ink);
+      margin: 0;
+      white-space: pre-wrap;
+      line-height: 32px;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--soft-ink);
+      font-style: italic;
+      margin-top: 64px;
+      line-height: 32px;
+    }
+
+    /* Modal for Adding Notes */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: var(--paper);
+      width: min(500px, 90%);
+      padding: 30px;
+      border-radius: 8px;
+      border: 1px solid var(--paper-dark);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .modal h3 {
+      margin: 0;
+      font-family: 'Fraunces', serif;
+      color: var(--accent);
+    }
+
+    .modal input, .modal textarea {
+      width: 100%;
+      background: #fbf9f5;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .modal textarea {
+      height: 120px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-cancel {
+      background: transparent;
+      color: var(--soft-ink);
+    }
+
+    .btn-save {
+      background: var(--accent);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="diary-book">
+    <!-- Top Filter Header Column -->
+    <header class="top-bar">
+      <div class="filter-group">
+        <label for="yearSelect">YEAR</label>
+        <select id="yearSelect" onchange="filterEntries()"></select>
+
+        <label for="monthSelect" style="margin-left: 10px;">MONTH</label>
+        <select id="monthSelect" onchange="filterEntries()">
+          <option value="ALL">All Months</option>
+          <option value="01">Jan (01)</option>
+          <option value="02">Feb (02)</option>
+          <option value="03">Mar (03)</option>
+          <option value="04">Apr (04)</option>
+          <option value="05">May (05)</option>
+          <option value="06">Jun (06)</option>
+          <option value="07">Jul (07)</option>
+          <option value="08">Aug (08)</option>
+          <option value="09">Sep (09)</option>
+          <option value="10">Oct (10)</option>
+          <option value="11">Nov (11)</option>
+          <option value="12">Dec (12)</option>
+        </select>
+      </div>
+
+      <!-- Completely Hidden Button (+) in top right -->
+      <button type="button" class="secret-invisible-btn secret-add-btn" onclick="openModal()" aria-label="Add Secret Note">+</button>
+    </header>
+
+    <!-- Main Lined Diary Area -->
+    <main class="diary-content" id="diaryContent">
+      <!-- Notes will render dynamically here -->
+    </main>
+  </div>
+
+  <!-- Hidden Add Note Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h3>新增手記 // New Secret Note</h3>
+      <input type="text" id="noteTitle" placeholder="標題 Title...">
+      <textarea id="noteBody" placeholder="撰寫內容 Write your message here..."></textarea>
+      <div class="modal-actions">
+        <button class="btn btn-cancel" onclick="closeModal()">取消</button>
+        <button class="btn btn-save" onclick="saveNote()">儲存手記</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const defaultNotes = [
+      {
+        id: 1,
+        date: "2026-03-15",
+        year: "2026",
+        month: "03",
+        title: "秘密預熱計畫備忘",
+        body: "小姍姍關注組 Big Project 籌備進度順利。記得確認 NovRun 頁面的開放時間。"
+      }
+    ];
+
+    function getStoredNotes() {
+      const data = localStorage.getItem('secret_diary_notes');
+      return data ? JSON.parse(data) : defaultNotes;
+    }
+
+    function initYears() {
+      const yearSelect = document.getElementById('yearSelect');
+      const currentYear = new Date().getFullYear();
+      const minYear = 2026; // Delete 2025 and before
+      
+      yearSelect.innerHTML = '';
+      
+      const startYear = Math.max(currentYear, minYear);
+      for (let y = startYear; y >= minYear; y--) {
+        const opt = document.createElement('option');
+        opt.value = y.toString();
+        opt.textContent = y;
+        yearSelect.appendChild(opt);
+      }
+      
+      const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+      document.getElementById('monthSelect').value = currentMonth;
+    }
+
+    function filterEntries() {
+      const selectedYear = document.getElementById('yearSelect').value;
+      const selectedMonth = document.getElementById('monthSelect').value;
+      const container = document.getElementById('diaryContent');
+      const notes = getStoredNotes();
+
+      container.innerHTML = '';
+
+      const filtered = notes.filter(n => {
+        const matchYear = n.year === selectedYear;
+        const matchMonth = selectedMonth === 'ALL' || n.month === selectedMonth;
+        return matchYear && matchMonth;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state">此月份暫無紀錄。</div>';
+        return;
+      }
+
+      filtered.forEach(note => {
+        const card = document.createElement('article');
+        card.className = 'entry-card';
+        card.innerHTML = `
+          <div class="entry-header">
+            <span class="entry-date">${note.date}</span>
+            <button type="button" class="secret-invisible-btn secret-del-btn" onclick="deleteNote(${note.id})" aria-label="Delete Note">-</button>
+          </div>
+          <h4 class="entry-title">${note.title}</h4>
+          <p class="entry-body">${note.body}</p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function deleteNote(id) {
+      if (confirm("確定要刪除這條紀錄嗎？")) {
+        let notes = getStoredNotes();
+        notes = notes.filter(n => n.id !== id);
+        localStorage.setItem('secret_diary_notes', JSON.stringify(notes));
+        filterEntries();
+      }
+    }
+
+    function openModal() {
+      document.getElementById('modalOverlay').classList.add('active');
+      document.getElementById('noteTitle').focus();
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.getElementById('noteTitle').value = '';
+      document.getElementById('noteBody').value = '';
+    }
+
+    function saveNote() {
+      const title = document.getElementById('noteTitle').value.trim();
+      const body = document.getElementById('noteBody').value.trim();
+
+      if (!title || !body) {
+        alert('請填寫標題與內容！');
+        return;
+      }
+
+      const now = new Date();
+      const year = String(now.getFullYear());
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+
+      const newNote = {
+        id: Date.now(),
+        date: dateStr,
+        year: year,
+        month: month,
+        title: title,
+        body: body
+      };
+
+      const notes = getStoredNotes();
+      notes.unshift(newNote);
+      localStorage.setItem('secret_diary_notes', JSON.stringify(notes));
+
+      document.getElementById('yearSelect').value = year;
+      document.getElementById('monthSelect').value = month;
+
+      closeModal();
+      filterEntries();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initYears();
+      filterEntries();
+    });
+  </script>
+</body>
+</html>
