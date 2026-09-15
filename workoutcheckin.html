@@ -1,843 +1,982 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>姍姍一定做得島 🏃‍♂️⚡ - 運動冒險簽到島</title>
-    <!-- Tailwind CSS -->
+    <title>姍姍一定做得島 - 運動冒險簽到</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons (Updated CDN version) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Canvas Confetti Library for Celebrations -->
+    <!-- Canvas Confetti CDN -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        energyOrange: '#FF6B35',
-                        energyYellow: '#FFC72C',
-                        skyBlue: '#00A8E8',
-                        grassGreen: '#10B981',
-                        sunnyBg: '#F0FDF4',
+                        brand: {
+                            orange: '#FF5722',
+                            yellow: '#FFC107',
+                            emerald: '#10B981',
+                            teal: '#0D9488',
+                            sky: '#0284C7',
+                            darkbg: '#0F172A',
+                            darkcard: '#1E293B',
+                            darkborder: '#334155'
+                        }
                     },
                     fontFamily: {
-                        sans: ['Outfit', 'Noto Sans TC', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+
     <style>
         body {
-            background: linear-gradient(135deg, #E0F2FE 0%, #DCFCE7 50%, #FEF9C3 100%);
-            min-height: 100vh;
-            font-family: 'Outfit', 'Noto Sans TC', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .card-shadow {
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+
+        /* 隱藏預設滾動條 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-        .card-glow-orange {
-            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
-        .card-glow-yellow {
-            box-shadow: 0 0 20px rgba(255, 199, 44, 0.4);
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 9999px;
         }
-        .bounce-hover:hover {
-            transform: translateY(-4px);
+        
+        body.dark-mode {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
         }
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255, 199, 44, 0.8)); }
-            50% { transform: scale(1.08); filter: drop-shadow(0 0 16px rgba(255, 107, 53, 0.9)); }
+        body.dark-mode .bg-white {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
         }
-        .pulse-reward {
-            animation: pulseGlow 2s infinite ease-in-out;
+        body.dark-mode .text-slate-800, 
+        body.dark-mode .text-slate-700 {
+            color: #f1f5f9 !important;
+        }
+        body.dark-mode .text-slate-600,
+        body.dark-mode .text-slate-500 {
+            color: #cbd5e1 !important;
+        }
+        body.dark-mode .bg-slate-50, 
+        body.dark-mode .bg-slate-100 {
+            background-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode input, 
+        body.dark-mode textarea, 
+        body.dark-mode select {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            border-color: #475569 !important;
+        }
+        body.dark-mode #backOfficeModal > div,
+        body.dark-mode #passwordModal > div,
+        body.dark-mode #rewardModal > div,
+        body.dark-mode #checkinSuccessModal > div,
+        body.dark-mode #editLogModal > div {
+            background-color: #1e293b !important;
+            color: #f8fafc !important;
+            border-color: #475569 !important;
+        }
+        body.dark-mode .bg-rose-50 {
+            background-color: #31121f !important;
+            border-color: #831843 !important;
         }
     </style>
 </head>
-<body class="font-sans text-slate-800 pb-16">
+<body class="bg-emerald-50/60 min-h-full text-slate-800 pb-20 selection:bg-emerald-500 selection:text-white transition-colors duration-300">
 
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-sky-100 px-4 py-3 shadow-sm">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-gradient-to-tr from-energyOrange to-energyYellow p-2.5 rounded-2xl text-white shadow-md">
-                    <i class="fa-solid fa-person-running text-2xl"></i>
+    <!-- 調整 Container 最大寬度：手機為單欄，電腦螢幕 (lg) 為 5XL 寬雙欄 -->
+    <div id="app" class="max-w-5xl mx-auto px-4 py-6 sm:px-6 min-h-screen flex flex-col justify-between">
+        
+        <div>
+            <!-- Top Header -->
+            <header class="flex items-center justify-between mb-6 bg-white/90 dark:bg-slate-800/80 backdrop-blur-md p-4 sm:p-5 rounded-3xl shadow-sm border border-emerald-100 dark:border-slate-700">
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex-shrink-0 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+                        <i class="fa-solid fa-person-running text-2xl"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight whitespace-nowrap truncate">
+                            姍姍一定做得島
+                        </h1>
+                        <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">🏝️ 運動冒險簽到</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="font-extrabold text-xl text-slate-900 tracking-tight leading-none">姍姍一定做得島</h1>
-                    <span class="text-xs font-bold text-energyOrange tracking-wider uppercase">運動冒險簽到島</span>
+
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="bg-emerald-100 dark:bg-emerald-950/60 px-3.5 py-2 rounded-2xl border border-emerald-200 dark:border-emerald-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-fire text-emerald-500 animate-pulse text-sm"></i>
+                        <div class="text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                            總累積: <span id="totalCheckinsCount" class="text-sm sm:text-base font-extrabold">0</span> 次
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <!-- Stats Pill & Back Office Trigger -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <button onclick="openBackOfficeModal()" class="bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all border border-slate-700">
-                    <i class="fa-solid fa-gear text-amber-400"></i>
-                    <span class="hidden sm:inline">後台管理</span>
-                    <span class="sm:hidden">後台</span>
-                </button>
-                <div class="flex items-center gap-2 bg-gradient-to-r from-amber-100 to-orange-100 border border-orange-200 px-3.5 py-1.5 rounded-full shadow-inner">
-                    <i class="fa-solid fa-fire text-energyOrange animate-bounce"></i>
-                    <span class="text-xs sm:text-sm font-black text-slate-700">總累積: <span id="statTotalCheckins" class="text-energyOrange text-base">0</span> 次</span>
+            </header>
+
+            <!-- 主佈局：手機直排、電腦網頁 (lg) 自動改為左右雙欄 layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- 左欄 (電腦端)：輪次橫幅、冒險任務、近期日誌 -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Cycle Banner -->
+                    <section class="bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-700 rounded-3xl p-5 sm:p-6 text-white shadow-xl shadow-teal-500/20 relative overflow-hidden">
+                        <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <span class="text-xs font-bold uppercase tracking-wider bg-white/20 backdrop-blur-md px-2.5 py-1 rounded-full text-white">
+                                        5次簽到解鎖大獎
+                                    </span>
+                                    <h2 class="text-2xl font-black mt-2 tracking-wide" id="cycleTitle">第 1 輪冒險考驗</h2>
+                                </div>
+                                <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shadow-inner" id="rewardIconBox">
+                                    🥉
+                                </div>
+                            </div>
+                            
+                            <p class="text-xs text-emerald-100 mb-4 font-medium" id="cycleTargetDesc">
+                                再簽到 <span id="remainingInCycle" class="font-extrabold text-white text-base">5</span> 次，解鎖本輪幸運好禮！
+                            </p>
+
+                            <!-- Cycle Progress Bar -->
+                            <div class="w-full bg-black/20 rounded-full h-3 p-0.5 backdrop-blur-sm mb-3">
+                                <div id="cycleProgressBar" class="bg-gradient-to-r from-emerald-200 to-teal-300 h-full rounded-full transition-all duration-500 shadow-sm" style="width: 0%"></div>
+                            </div>
+
+                            <!-- Checkin Dots (Multi-row support) -->
+                            <div class="space-y-2 pt-1" id="cycleDotsContainer">
+                                <!-- Dots populated by JS -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Tasks List -->
+                    <section>
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                                <i class="fa-solid fa-trophy text-emerald-500"></i>
+                                <span>動態冒險挑戰任務</span>
+                            </h2>
+                            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">完成自動升級</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3" id="tasksList">
+                            <!-- Task cards rendered dynamically by JS -->
+                        </div>
+                    </section>
                 </div>
+
+                <!-- 右欄 (電腦端)：簽到打卡表單與近期冒險日誌 -->
+                <div class="lg:col-span-5 space-y-6">
+                    <section class="bg-white dark:bg-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-700 transition-colors duration-300">
+                        <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-to-square text-emerald-500"></i>
+                            <span>新增運動資料與簽到</span>
+                        </h2>
+
+                        <form id="checkinForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                            <!-- Sports Type Picker Buttons -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-2">
+                                    運動項目 <span class="text-rose-500">*</span>
+                                </label>
+                                <div class="grid grid-cols-3 gap-2" id="sportButtonsGrid">
+                                    <button type="button" onclick="selectSport('跑步')" class="sport-btn p-2.5 rounded-2xl border text-xs font-bold transition flex flex-col items-center gap-1.5 border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-300" data-sport="跑步">
+                                        <i class="fa-solid fa-person-running text-base"></i>
+                                        <span>跑步</span>
+                                    </button>
+                                    <button type="button" onclick="selectSport('體能訓練')" class="sport-btn p-2.5 rounded-2xl border text-xs font-bold transition flex flex-col items-center gap-1.5 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-300" data-sport="體能訓練">
+                                        <i class="fa-solid fa-dumbbell text-base"></i>
+                                        <span>體能訓練</span>
+                                    </button>
+                                    <button type="button" onclick="selectSport('單車')" class="sport-btn p-2.5 rounded-2xl border text-xs font-bold transition flex flex-col items-center gap-1.5 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-300" data-sport="單車">
+                                        <i class="fa-solid fa-person-biking text-base"></i>
+                                        <span>單車</span>
+                                    </button>
+                                    <button type="button" onclick="selectSport('行山')" class="sport-btn p-2.5 rounded-2xl border text-xs font-bold transition flex flex-col items-center gap-1.5 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-300" data-sport="行山">
+                                        <i class="fa-solid fa-person-hiking text-base"></i>
+                                        <span>行山</span>
+                                    </button>
+                                    <!-- 曳曳: 亮白模式下隱藏，暗黑模式下顯示 -->
+                                    <button type="button" id="sexSportBtn" onclick="selectSport('曳曳')" class="sport-btn p-2.5 rounded-2xl border text-xs font-bold transition flex flex-col items-center gap-1.5 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-rose-400 hidden" data-sport="曳曳">
+                                        <i class="fa-solid fa-heart text-rose-500 text-base"></i>
+                                        <span>曳曳</span>
+                                    </button>
+                                    <button type="button" onclick="selectSport('其他')" class="sport-btn p-2.5 rounded-2xl border text-xs font-bold transition flex flex-col items-center gap-1.5 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-300" data-sport="其他">
+                                        <i class="fa-solid fa-icons text-base"></i>
+                                        <span>其他</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Input: Custom Sport Name (for 其他) -->
+                            <div id="customSportFieldGroup" class="hidden transition-all duration-300">
+                                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                    <i class="fa-solid fa-pen-nib text-emerald-500 mr-1"></i>運動項目 <span class="text-rose-500">*</span>
+                                </label>
+                                <input type="text" id="customSportInput" placeholder="例如：瑜伽、游泳、羽毛球..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-slate-900 dark:text-white">
+                            </div>
+
+                            <!-- Dynamic Input: Distance (for 跑步, 單車, 行山) -->
+                            <div id="distanceFieldGroup" class="transition-all duration-300">
+                                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                    <i class="fa-solid fa-route text-emerald-500 mr-1"></i>運動距離 (Km) <span class="text-rose-500">*</span>
+                                </label>
+                                <input type="number" id="distanceInput" step="0.1" min="0.1" placeholder="例如：5.5" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-slate-900 dark:text-white">
+                            </div>
+
+                            <!-- Workout Duration (Min) -->
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                    <i class="fa-solid fa-stopwatch text-emerald-500 mr-1"></i>運動時間 (分鐘) <span class="text-rose-500">*</span>
+                                </label>
+                                <input type="number" id="durationInput" min="1" step="1" placeholder="例如：45" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-slate-900 dark:text-white">
+                            </div>
+
+                            <!-- Effort Slider (1-10) -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="text-xs font-bold text-slate-600 dark:text-slate-300">
+                                        <i class="fa-solid fa-gauge-high text-emerald-500 mr-1"></i>辛苦度 (1-10)
+                                    </label>
+                                    <span id="effortVal" class="text-xs font-black text-emerald-500">5 / 10</span>
+                                </div>
+                                <input type="range" id="effortInput" min="1" max="10" value="5" oninput="document.getElementById('effortVal').innerText = this.value + ' / 10'" class="w-full accent-emerald-500 cursor-pointer">
+                            </div>
+
+                            <!-- Secret Intimate Fields (for 曳曳) -->
+                            <div id="intimateFieldsGroup" class="hidden space-y-4 p-3.5 bg-rose-50/80 dark:bg-rose-950/30 rounded-2xl border border-rose-200 dark:border-rose-900/50 transition-all duration-300">
+                                <p class="text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-heart-circle-bolt"></i>
+                                    <span>親密時間私密評分</span>
+                                </p>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <label class="text-xs font-bold text-slate-600 dark:text-slate-300">舒適度 (1-10)</label>
+                                        <span id="comfortVal" class="text-xs font-black text-rose-500">2 / 10</span>
+                                    </div>
+                                    <input type="range" id="comfortInput" min="1" max="10" value="2" oninput="document.getElementById('comfortVal').innerText = this.value + ' / 10'" class="w-full accent-rose-500 cursor-pointer">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <label class="text-xs font-bold text-slate-600 dark:text-slate-300">飽飽度 (1-10)</label>
+                                        <span id="fullnessVal" class="text-xs font-black text-rose-500">2 / 10</span>
+                                    </div>
+                                    <input type="range" id="fullnessInput" min="1" max="10" value="2" oninput="document.getElementById('fullnessVal').innerText = this.value + ' / 10'" class="w-full accent-rose-500 cursor-pointer">
+                                </div>
+                            </div>
+
+                            <!-- Feedback Textarea -->
+                            <div id="feedbackFieldGroup">
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="text-xs font-bold text-slate-600 dark:text-slate-300">
+                                        <i class="fa-solid fa-comment-dots text-emerald-500 mr-1"></i>心得 / 備注
+                                    </label>
+                                    <span id="charCount" class="text-[10px] text-slate-400 font-bold">0 / 10 字</span>
+                                </div>
+                                <textarea id="feedbackInput" rows="3" oninput="updateCharCount()" placeholder="分享今天運動的心情或成果吧..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-slate-900 dark:text-white resize-none"></textarea>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 text-white font-black text-sm shadow-lg shadow-teal-500/25 active:scale-[0.99] transition-all">
+                                <i class="fa-solid fa-circle-check mr-1.5"></i>完成打卡簽到
+                            </button>
+                        </form>
+                    </section>
+
+                    <!-- 近期冒險日誌（移至新增運動資料與簽到下方） -->
+                    <section class="bg-white dark:bg-slate-800 rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-700 transition-colors duration-300">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-emerald-500"></i>
+                                <span>近期冒險日誌</span>
+                            </h2>
+                            <button onclick="clearPublicLogs()" class="text-xs text-slate-400 hover:text-rose-500 transition">
+                                <i class="fa-solid fa-trash-can mr-1"></i>清空紀錄
+                            </button>
+                        </div>
+                        <div class="space-y-3" id="logsContainer">
+                            <!-- Logs populated by JS -->
+                        </div>
+                    </section>
+                </div>
+
             </div>
         </div>
-    </header>
 
-    <!-- Main Container -->
-    <main class="max-w-4xl mx-auto px-4 mt-6 space-y-8">
-
-        <section class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-white/60 relative overflow-hidden">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-energyYellow/20 rounded-full blur-2xl pointer-events-none"></div>
-            
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div>
-                    <div class="inline-flex items-center gap-2 bg-orange-100 text-energyOrange text-xs font-black px-3 py-1 rounded-full mb-2">
-                        <i class="fa-solid fa-trophy"></i> 滿 5 次即解鎖大獎
-                    </div>
-                    <h2 class="text-2xl font-black text-slate-800">冒險進度 & 階段獎勵</h2>
-                    <p class="text-xs text-slate-500 font-medium mt-1">連續運動，獎勵越往後越豐厚強大！</p>
-                </div>
-                <!-- Cycle Badge Indicator -->
-                <div class="bg-sky-50 border border-sky-200 px-4 py-2 rounded-2xl flex items-center gap-3">
-                    <div class="text-right">
-                        <div class="text-xs text-slate-400 font-bold uppercase">當前獎勵輪次</div>
-                        <div id="cycleTitleText" class="text-sm font-extrabold text-skyBlue">第 1 輪 (1-5次)</div>
-                    </div>
-                    <i class="fa-solid fa-flag-checkered text-skyBlue text-xl"></i>
-                </div>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="space-y-2 mb-8">
-                <div class="flex justify-between items-end text-sm font-black">
-                    <span class="text-slate-600">當前輪次進度: <span id="currentCycleProgressText" class="text-energyOrange">0/5</span></span>
-                    <span id="nextRewardLabel" class="text-xs bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-full">下個目標：🥉 初級補給禮包</span>
-                </div>
-                <div class="h-5 w-full bg-slate-100 rounded-full p-1 shadow-inner relative overflow-hidden">
-                    <div id="cycleProgressBar" class="h-full bg-gradient-to-r from-energyOrange via-energyYellow to-grassGreen rounded-full transition-all duration-500 w-0 relative">
-                        <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reward Milestone Cards -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="rewardCardsContainer"></div>
-
-            <!-- Current Targeted Reward Highlight Banner -->
-            <div id="rewardHighlightBanner" class="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-4 text-white flex items-center justify-between shadow-lg">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-2xl" id="targetRewardIcon">
-                        🎁
-                    </div>
-                    <div>
-                        <div class="text-xs opacity-90 font-bold uppercase" id="targetRewardStageLabel">第 5 次獎勵</div>
-                        <div class="text-base font-black" id="targetRewardNameLabel">🥉 初級運動補給（特製電解質飲品 / 輕量獎牌）</div>
-                    </div>
-                </div>
-                <span class="hidden sm:inline-block bg-white/20 text-xs px-3 py-1.5 rounded-lg font-bold border border-white/30">達到解鎖</span>
-            </div>
-        </section>
-
-        <section class="space-y-4">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="text-xl font-black text-slate-800 flex items-center gap-2">
-                        <i class="fa-solid fa-bolt text-energyYellow text-2xl"></i>
-                        動態冒險挑戰任務
-                    </h2>
-                    <p class="text-xs text-slate-500 font-medium">每完成一項即可升級更高目標！(週任務將於每周一 00:00 自動清零重置)</p>
-                </div>
-                <span class="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-bold border border-emerald-200">
-                    <i class="fa-solid fa-arrows-rotate"></i> 每周一自動清零
+        <footer class="mt-8 pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center gap-3">
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-palette text-emerald-500"></i>
+                    <span>頁面顏色：</span>
                 </span>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                <!-- Task 1: Single Run Distance -->
-                <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-100 flex flex-col justify-between bounce-hover transition-all">
-                    <div>
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-orange-100 text-energyOrange flex items-center justify-center text-lg font-bold">
-                                    <i class="fa-solid fa-person-running"></i>
-                                </div>
-                                <div>
-                                    <span class="text-xs font-extrabold text-orange-500 uppercase tracking-wide">單次突破</span>
-                                    <h3 class="font-extrabold text-slate-800 text-base" id="task1Title">單次跑步達 8 km</h3>
-                                </div>
-                            </div>
-                            <span class="bg-slate-100 text-slate-600 font-black text-xs px-2.5 py-1 rounded-md" id="task1LevelTag">Lv.1</span>
-                        </div>
-
-                        <div class="mt-3 space-y-1">
-                            <div class="flex justify-between items-center text-[11px] font-bold text-slate-500">
-                                <span>挑戰進度</span>
-                                <span id="task1ProgressText" class="text-energyOrange font-extrabold">0 / 8 km</span>
-                            </div>
-                            <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div id="task1ProgressBar" class="h-full bg-energyOrange rounded-full transition-all duration-500 w-0"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-xs font-semibold text-slate-500">完成後目標 <span class="text-energyOrange font-bold">+1 km</span></span>
-                        <button onclick="claimTaskReward(1)" class="bg-gradient-to-r from-energyOrange to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-check"></i> 完成挑戰
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Task 2: Weekly Run Volume -->
-                <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-100 flex flex-col justify-between bounce-hover transition-all">
-                    <div>
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-sky-100 text-skyBlue flex items-center justify-center text-lg font-bold">
-                                    <i class="fa-solid fa-route"></i>
-                                </div>
-                                <div>
-                                    <span class="text-xs font-extrabold text-skyBlue uppercase tracking-wide">週跑量累積</span>
-                                    <h3 class="font-extrabold text-slate-800 text-base" id="task2Title">一星期跑量達 20 km</h3>
-                                </div>
-                            </div>
-                            <span class="bg-slate-100 text-slate-600 font-black text-xs px-2.5 py-1 rounded-md" id="task2LevelTag">Lv.1</span>
-                        </div>
-
-                        <div class="mt-3 space-y-1">
-                            <div class="flex justify-between items-center text-[11px] font-bold text-slate-500">
-                                <span>挑戰進度</span>
-                                <span id="task2ProgressText" class="text-skyBlue font-extrabold">0 / 20 km</span>
-                            </div>
-                            <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div id="task2ProgressBar" class="h-full bg-skyBlue rounded-full transition-all duration-500 w-0"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-xs font-semibold text-slate-500">完成後目標 <span class="text-skyBlue font-bold">+5 km</span></span>
-                        <button onclick="claimTaskReward(2)" class="bg-gradient-to-r from-skyBlue to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-check"></i> 完成挑戰
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Task 3: Weekly Sport Time -->
-                <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-100 flex flex-col justify-between bounce-hover transition-all">
-                    <div>
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-100 text-grassGreen flex items-center justify-center text-lg font-bold">
-                                    <i class="fa-solid fa-stopwatch"></i>
-                                </div>
-                                <div>
-                                    <span class="text-xs font-extrabold text-grassGreen uppercase tracking-wide">耐力時間</span>
-                                    <h3 class="font-extrabold text-slate-800 text-base" id="task3Title">單週運動時間達 120 分鐘</h3>
-                                </div>
-                            </div>
-                            <span class="bg-slate-100 text-slate-600 font-black text-xs px-2.5 py-1 rounded-md" id="task3LevelTag">Lv.1</span>
-                        </div>
-
-                        <div class="mt-3 space-y-1">
-                            <div class="flex justify-between items-center text-[11px] font-bold text-slate-500">
-                                <span>挑戰進度</span>
-                                <span id="task3ProgressText" class="text-grassGreen font-extrabold">0 / 120 分鐘</span>
-                            </div>
-                            <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div id="task3ProgressBar" class="h-full bg-grassGreen rounded-full transition-all duration-500 w-0"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-xs font-semibold text-slate-500">完成後目標 <span class="text-grassGreen font-bold">+20 分鐘</span></span>
-                        <button onclick="claimTaskReward(3)" class="bg-gradient-to-r from-grassGreen to-emerald-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-check"></i> 完成挑戰
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Task 4: Diverse Sports Challenge -->
-                <div class="bg-white rounded-2xl p-5 card-shadow border border-slate-100 flex flex-col justify-between bounce-hover transition-all">
-                    <div>
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-lg font-bold">
-                                    <i class="fa-solid fa-layer-group"></i>
-                                </div>
-                                <div>
-                                    <span class="text-xs font-extrabold text-purple-600 uppercase tracking-wide">多元體驗</span>
-                                    <h3 class="font-extrabold text-slate-800 text-base" id="task4Title">一週完成 3 種不同運動項目</h3>
-                                </div>
-                            </div>
-                            <span class="bg-slate-100 text-slate-600 font-black text-xs px-2.5 py-1 rounded-md" id="task4LevelTag">Lv.1</span>
-                        </div>
-
-                        <div class="mt-3 space-y-1">
-                            <div class="flex justify-between items-center text-[11px] font-bold text-slate-500">
-                                <span>挑戰進度</span>
-                                <span id="task4ProgressText" class="text-purple-600 font-extrabold">0 / 3 種</span>
-                            </div>
-                            <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div id="task4ProgressBar" class="h-full bg-purple-600 rounded-full transition-all duration-500 w-0"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                        <span class="text-xs font-semibold text-slate-500">完成後目標 <span class="text-purple-600 font-bold">+1 種項目</span></span>
-                        <button onclick="claimTaskReward(4)" class="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-md active:scale-95 transition-all flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-check"></i> 完成挑戰
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <section class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-slate-100 relative">
-            <div class="flex items-center gap-3 mb-6">
-                <div class="w-12 h-12 bg-gradient-to-tr from-skyBlue to-blue-600 rounded-2xl text-white flex items-center justify-center text-xl shadow-md">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                </div>
-                <div>
-                    <h2 class="text-xl font-black text-slate-800">打卡填寫運動紀錄</h2>
-                    <p class="text-xs text-slate-500 font-medium">詳細記錄你的冒險數據，提交後自動進行一次簽到！</p>
+                <div class="inline-flex p-1 bg-slate-200/80 dark:bg-slate-800 rounded-2xl border border-slate-300/50 dark:border-slate-700">
+                    <button onclick="setTheme('light')" id="themeLightBtn" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-white text-slate-800 shadow-sm">
+                        <i class="fa-solid fa-sun text-amber-500"></i>
+                        <span>亮白</span>
+                    </button>
+                    <button onclick="setTheme('dark')" id="themeDarkBtn" class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-200">
+                        <i class="fa-solid fa-moon text-indigo-400"></i>
+                        <span>暗黑</span>
+                    </button>
                 </div>
             </div>
 
-            <form id="workoutForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
-                
-                <!-- 1. Sport Type Selection -->
-                <div>
-                    <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-2">
-                        運動項目 <span class="text-red-500">*</span>
-                    </label>
-                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2" id="sportTypeGrid">
-                        <button type="button" onclick="selectSport('跑步', this)" class="sport-btn bg-slate-50 border-2 border-slate-200 hover:border-energyOrange text-slate-700 py-2.5 px-2 rounded-xl font-bold text-xs flex flex-col items-center gap-1 transition-all">
-                            <i class="fa-solid fa-person-running text-lg text-energyOrange"></i> 跑步
-                        </button>
-                        <button type="button" onclick="selectSport('體能訓練', this)" class="sport-btn bg-slate-50 border-2 border-slate-200 hover:border-energyOrange text-slate-700 py-2.5 px-2 rounded-xl font-bold text-xs flex flex-col items-center gap-1 transition-all">
-                            <i class="fa-solid fa-dumbbell text-lg text-amber-500"></i> 體能訓練
-                        </button>
-                        <button type="button" onclick="selectSport('單車', this)" class="sport-btn bg-slate-50 border-2 border-slate-200 hover:border-energyOrange text-slate-700 py-2.5 px-2 rounded-xl font-bold text-xs flex flex-col items-center gap-1 transition-all">
-                            <i class="fa-solid fa-bicycle text-lg text-skyBlue"></i> 單車
-                        </button>
-                        <button type="button" onclick="selectSport('行山', this)" class="sport-btn bg-slate-50 border-2 border-slate-200 hover:border-energyOrange text-slate-700 py-2.5 px-2 rounded-xl font-bold text-xs flex flex-col items-center gap-1 transition-all">
-                            <i class="fa-solid fa-person-hiking text-lg text-grassGreen"></i> 行山
-                        </button>
-                        <button type="button" onclick="selectSport('曳曳', this)" class="sport-btn bg-slate-50 border-2 border-slate-200 hover:border-energyOrange text-slate-700 py-2.5 px-2 rounded-xl font-bold text-xs flex flex-col items-center gap-1 transition-all">
-                            <i class="fa-solid fa-heart text-lg text-rose-500"></i> 曳曳
-                        </button>
-                        <button type="button" onclick="selectSport('其他', this)" class="sport-btn bg-slate-50 border-2 border-slate-200 hover:border-energyOrange text-slate-700 py-2.5 px-2 rounded-xl font-bold text-xs flex flex-col items-center gap-1 transition-all">
-                            <i class="fa-solid fa-icons text-lg text-purple-500"></i> 其他
-                        </button>
-                    </div>
-                    <input type="hidden" id="selectedSportInput" required value="">
-                </div>
+            <button onclick="openPasswordModal()" class="px-3.5 py-2 rounded-2xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5 shadow-sm">
+                <i class="fa-solid fa-gear text-emerald-500"></i>
+                <span>後台</span>
+            </button>
+        </footer>
 
-                <!-- Custom Sport Input Field -->
-                <div id="otherSportFieldContainer" class="hidden bg-purple-50 border border-purple-200 rounded-2xl p-4 transition-all">
-                    <label class="block text-xs font-extrabold text-purple-800 uppercase tracking-wider mb-1">
-                        <i class="fa-solid fa-pen text-purple-600"></i> 自訂運動項目名稱 <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="otherSportInput" placeholder="請輸入運動項目名稱（例如：瑜伽、羽毛球、游泳）" class="w-full bg-white border border-purple-300 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500">
-                </div>
+    </div>
 
-                <!-- Distance Field -->
-                <div id="distanceFieldContainer" class="hidden bg-orange-50 border border-orange-200 rounded-2xl p-4 transition-all">
-                    <label class="block text-xs font-extrabold text-orange-800 uppercase tracking-wider mb-1">
-                        <i class="fa-solid fa-route text-energyOrange"></i> 運動距離 (km) <span class="text-red-500">*</span>
-                    </label>
-                    <input type="number" step="0.1" id="distanceInput" min="0.1" placeholder="例如：5.5" class="w-full bg-white border border-orange-300 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-energyOrange">
-                </div>
+    <!-- Modals -->
+    <!-- 1. Password Verification Modal -->
+    <div id="passwordModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl border border-slate-100 dark:border-slate-700 text-center relative">
+            <button onclick="closePasswordModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">後台管理驗證</h3>
+            <p class="text-xs text-rose-500 font-semibold mb-4 mt-1">想入我 ? 要色色話噢~</p>
 
-                <!-- Intimate Ratings Field -->
-                <div id="yeYeFieldsContainer" class="hidden bg-rose-50 border border-rose-200 rounded-2xl p-4 space-y-4 transition-all">
-                    <div class="text-xs font-extrabold text-rose-700 flex items-center gap-1.5">
-                        <i class="fa-solid fa-heart-pulse"></i> 專屬親密感受評分 (1 - 10 級)
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1">
-                                <span>舒適度</span>
-                                <span id="comfortValue" class="text-rose-600 font-extrabold">8 / 10</span>
-                            </div>
-                            <input type="range" id="comfortInput" min="1" max="10" value="8" oninput="document.getElementById('comfortValue').innerText = this.value + ' / 10'" class="w-full accent-rose-500 cursor-pointer">
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1">
-                                <span>飽飽度</span>
-                                <span id="fullnessValue" class="text-rose-600 font-extrabold">8 / 10</span>
-                            </div>
-                            <input type="range" id="fullnessInput" min="1" max="10" value="8" oninput="document.getElementById('fullnessValue').innerText = this.value + ' / 10'" class="w-full accent-rose-500 cursor-pointer">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-extrabold text-rose-800 uppercase tracking-wider mb-1">
-                            <i class="fa-solid fa-sticky-note text-rose-500"></i> 親密特別備注 / 私密筆記 (選填)
-                        </label>
-                        <input type="text" id="yeYeNoteInput" placeholder="例：地點、特別動作、特殊心情小備注..." class="w-full bg-white border border-rose-200 rounded-xl px-3.5 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-400">
-                    </div>
-                </div>
-
-                <!-- Common Inputs Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1">
-                            <i class="fa-solid fa-clock text-skyBlue"></i> 運動時間 (分鐘) <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" id="durationInput" required min="1" placeholder="例如：45" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-skyBlue">
-                    </div>
-
-                    <div>
-                        <div class="flex justify-between items-center text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1">
-                            <span><i class="fa-solid fa-gauge-high text-amber-500"></i> 辛苦度 (1-10)</span>
-                            <span id="effortValue" class="text-amber-600 font-black">7 / 10</span>
-                        </div>
-                        <input type="range" id="effortInput" min="1" max="10" value="7" oninput="document.getElementById('effortValue').innerText = this.value + ' / 10'" class="w-full accent-amber-500 cursor-pointer py-2">
-                    </div>
-                </div>
-
-                <!-- Feedback Textarea (Only visible & required for '曳曳') -->
-                <div id="feedbackContainer" class="hidden">
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="block text-xs font-extrabold text-rose-700 uppercase tracking-wider">
-                            <i class="fa-solid fa-comment-dots text-rose-500"></i> 親密心得 / 意見 (最少 10 個字) <span class="text-red-500">*</span>
-                        </label>
-                        <span id="charCountLabel" class="text-xs font-bold text-slate-400">0 / 10 字</span>
-                    </div>
-                    <textarea id="feedbackInput" rows="3" oninput="updateCharCount()" placeholder="分享今天寶貴的感覺與心得吧...(至少需要 10 個字喔！)" class="w-full bg-rose-50/50 border border-rose-200 rounded-xl p-3 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none"></textarea>
-                    <p id="validationMsg" class="hidden text-xs text-red-500 font-bold mt-1 flex items-center gap-1">
-                        <i class="fa-solid fa-circle-exclamation"></i> 請輸入至少 10 個字的感受心得喔！
-                    </p>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-energyOrange via-energyYellow to-grassGreen hover:opacity-95 text-slate-900 font-black text-base py-4 rounded-2xl shadow-lg transform active:scale-98 transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-paper-plane text-xl"></i> 提交紀錄並完成 1 次簽到
+            <div class="relative mb-4">
+                <input type="password" id="adminPwdInput" placeholder="請輸入管理者密碼..." class="w-full px-4 py-2.5 pr-10 rounded-xl border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-slate-900 dark:text-white">
+                <button type="button" onclick="togglePasswordVisibility('adminPwdInput', 'eyeIcon')" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
                 </button>
-            </form>
-        </section>
-
-        <section class="bg-white rounded-3xl p-6 card-shadow border border-slate-100">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-black text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-slate-400"></i> 最近冒險日誌
-                </h3>
-                <button onclick="clearHistory()" class="text-xs text-slate-400 hover:text-red-500 transition-colors">清除紀錄</button>
             </div>
-            <div id="historyLogsContainer" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
-        </section>
 
-    </main>
+            <p id="passwordErrorMsg" class="text-xs text-rose-500 font-bold mb-3 hidden">硬入唔可以噢~</p>
 
-    <!-- Modal for Big Reward Celebration -->
-    <div id="rewardModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center space-y-4 card-glow-yellow border-4 border-energyYellow relative">
-            <div class="w-20 h-20 bg-gradient-to-tr from-amber-400 to-energyOrange rounded-full mx-auto flex items-center justify-center text-4xl shadow-xl pulse-reward">
-                🏆
-            </div>
-            <div>
-                <span class="text-xs font-black text-energyOrange uppercase tracking-widest">Congratulations</span>
-                <h3 class="text-2xl font-black text-slate-800 mt-1">解鎖階段大獎！</h3>
-                <p id="modalRewardText" class="text-sm font-bold text-slate-600 mt-2 bg-amber-50 border border-amber-200 p-3 rounded-xl"></p>
-            </div>
-            <button onclick="closeRewardModal()" class="w-full bg-gradient-to-r from-energyOrange to-amber-500 text-white font-extrabold py-3 rounded-xl shadow-md hover:brightness-105 active:scale-95 transition-all">
-                太棒了！開心收下
+            <button onclick="verifyAdminPassword()" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm shadow-md transition">
+                解鎖進入後台
             </button>
         </div>
     </div>
 
-    <!-- Modal for General Check-in Success -->
-    <div id="checkinSuccessModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center space-y-4 card-shadow border-2 border-emerald-400 relative">
-            <div class="w-20 h-20 bg-gradient-to-tr from-emerald-400 to-teal-500 rounded-full mx-auto flex items-center justify-center text-4xl text-white shadow-xl">
-                ⚡
+    <!-- 2. Back Office Admin Panel Modal -->
+    <div id="backOfficeModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-lg h-[85vh] shadow-2xl border border-slate-100 dark:border-slate-700 flex flex-col overflow-hidden">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-emerald-500"></i>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">後台管理中心</h3>
+                </div>
+                <button onclick="closeBackOfficeModal()" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <div>
-                <span class="text-xs font-black text-emerald-600 uppercase tracking-widest">Check-in Success</span>
-                <h3 class="text-2xl font-black text-slate-800 mt-1">簽到成功！🎉</h3>
-                <div class="mt-3 bg-emerald-50 border border-emerald-200 p-4 rounded-2xl">
-                    <p id="encouragementQuoteText" class="text-sm font-bold text-emerald-800 leading-relaxed"></p>
+
+            <div class="grid grid-cols-3 p-1.5 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 gap-1 text-center">
+                <button onclick="switchBackOfficeTab('quotes')" id="tabBtnQuotes" class="bo-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-sm">
+                    勵志語錄庫
+                </button>
+                <button onclick="switchBackOfficeTab('tasks')" id="tabBtnTasks" class="bo-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition whitespace-nowrap text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">
+                    任務難度設定
+                </button>
+                <button onclick="switchBackOfficeTab('logs')" id="tabBtnLogs" class="bo-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition whitespace-nowrap text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">
+                    冒險與親密日誌編輯
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                <!-- Tab 1: Quote Bank -->
+                <div id="tabContentQuotes" class="space-y-3">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400">簽到打卡勵志語錄 (共 <span id="quotesCount">20</span> 條)</span>
+                        <button onclick="addNewQuotePrompt()" class="px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold">
+                            <i class="fa-solid fa-plus mr-1"></i>新增語錄
+                        </button>
+                    </div>
+                    <div id="quotesListContainer" class="space-y-2"></div>
+                </div>
+
+                <!-- Tab 2: Task Configurations -->
+                <div id="tabContentTasks" class="space-y-4 hidden">
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                        設定完成任務後的下一階基礎目標與遞增增量：
+                    </p>
+
+                    <div class="p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-2">1. 單次跑步突破 (km)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-[10px] text-slate-400">目前目標</span>
+                                <input type="number" id="cfgTask1Target" class="w-full px-2.5 py-1.5 rounded-lg border text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400">完成後每次增加 (+km)</span>
+                                <input type="number" id="cfgTask1Step" class="w-full px-2.5 py-1.5 rounded-lg border text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-2">2. 每週跑量累積 (km)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-[10px] text-slate-400">目前目標</span>
+                                <input type="number" id="cfgTask2Target" class="w-full px-2.5 py-1.5 rounded-lg border text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400">完成後每次增加 (+km)</span>
+                                <input type="number" id="cfgTask2Step" class="w-full px-2.5 py-1.5 rounded-lg border text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-2">3. 每週運動時間 (分鐘)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-[10px] text-slate-400">目前目標</span>
+                                <input type="number" id="cfgTask3Target" class="w-full px-2.5 py-1.5 rounded-lg border text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400">完成後每次增加 (+分鐘)</span>
+                                <input type="number" id="cfgTask3Step" class="w-full px-2.5 py-1.5 rounded-lg border text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-2">4. 每週多元運動種類</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <span class="text-[10px] text-slate-400">目前目標</span>
+                                <input type="number" id="cfgTask4Target" class="w-full px-2.5 py-1.5 rounded-lg border text-xs">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-400">完成後每次增加 (+種)</span>
+                                <input type="number" id="cfgTask4Step" class="w-full px-2.5 py-1.5 rounded-lg border text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="saveTaskDifficultyConfigs()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-xs shadow-sm">
+                        儲存任務難度設定
+                    </button>
+                </div>
+
+                <!-- Tab 3: History Log Admin -->
+                <div id="tabContentLogs" class="space-y-3 hidden">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-bold text-slate-500 dark:text-slate-400">全部冒險與親密歷史紀錄 (包含隱藏項目)</span>
+                    </div>
+                    <div id="adminLogsContainer" class="space-y-2"></div>
                 </div>
             </div>
-            <button onclick="closeCheckinSuccessModal()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-extrabold py-3 rounded-xl shadow-md hover:brightness-105 active:scale-95 transition-all">
+        </div>
+    </div>
+
+    <!-- 3. Edit History Log Modal -->
+    <div id="editLogModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 w-full max-w-md shadow-2xl border border-slate-100 dark:border-slate-700 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeEditLogModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-pen text-emerald-500"></i>
+                <span>編輯歷史紀錄</span>
+            </h3>
+
+            <input type="hidden" id="editLogId">
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-300 mb-1">打卡日期時間</label>
+                    <input type="text" id="editLogDate" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-300 mb-1">運動項目</label>
+                    <select id="editLogSport" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700">
+                        <option value="跑步">跑步</option>
+                        <option value="體能訓練">體能訓練</option>
+                        <option value="單車">單車</option>
+                        <option value="行山">行山</option>
+                        <option value="曳曳">曳曳</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-300 mb-1">運動時間 (分鐘)</label>
+                    <input type="number" id="editLogDuration" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-300 mb-1">距離 (km, 若無可填0)</label>
+                    <input type="number" step="0.1" id="editLogDistance" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-300 mb-1">辛苦度 (1-10)</label>
+                    <input type="number" min="1" max="10" id="editLogEffort" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700">
+                </div>
+                <div id="editIntimateSection" class="space-y-2 p-2.5 bg-rose-50 dark:bg-rose-950/30 rounded-xl border border-rose-200 dark:border-rose-900">
+                    <div>
+                        <label class="block font-bold text-rose-600 dark:text-rose-400 mb-1">舒適度 (1-10)</label>
+                        <input type="number" min="1" max="10" id="editLogComfort" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-rose-600 dark:text-rose-400 mb-1">飽飽度 (1-10)</label>
+                        <input type="number" min="1" max="10" id="editLogFullness" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-600 dark:text-slate-300 mb-1">心得 / 備注</label>
+                    <textarea id="editLogFeedback" rows="3" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700"></textarea>
+                </div>
+            </div>
+
+            <div class="mt-5 flex gap-2">
+                <button onclick="closeEditLogModal()" class="w-1/2 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold text-xs">取消</button>
+                <button onclick="handleSaveEditedLog()" class="w-1/2 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs">儲存修改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Checkin Success Quote Modal -->
+    <div id="checkinSuccessModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl border border-slate-100 dark:border-slate-700 text-center relative">
+            <div class="w-14 h-14 bg-gradient-to-tr from-emerald-400 to-teal-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-lg shadow-teal-500/30 animate-bounce">
+                <i class="fa-solid fa-person-running"></i>
+            </div>
+            
+            <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mb-2">簽到成功！冒險加分！</h3>
+            
+            <div class="p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-2xl border border-emerald-100 dark:border-emerald-900/50 my-4">
+                <p class="text-xs text-emerald-600 dark:text-emerald-400 font-bold mb-1">今日專屬冒險語錄</p>
+                <p id="successQuoteText" class="text-sm font-bold text-slate-800 dark:text-slate-100 leading-relaxed italic">
+                    "今天跨出的每一步，都是在向更強大的自己致敬！"
+                </p>
+            </div>
+
+            <button onclick="closeCheckinSuccessModal()" class="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-sm shadow-md transition">
                 繼續加油！
             </button>
         </div>
     </div>
 
-    <!-- Password Verification Modal -->
-    <div id="passwordModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center space-y-4 card-shadow border-2 border-slate-200 relative">
-            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full mx-auto flex items-center justify-center text-2xl shadow-inner">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-            <div>
-                <h3 class="text-xl font-black text-slate-800">後台管理驗證</h3>
-                <p class="text-xs text-slate-500 font-medium mt-1">想入我 ? 要色色話噢~</p>
-            </div>
-            <form onsubmit="verifyAdminPassword(event)" class="space-y-3">
-                <div class="relative">
-                    <input type="password" id="adminPasswordInput" placeholder="請輸入密碼" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-4 pr-10 py-2.5 text-center text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                    <button type="button" onclick="togglePasswordVisibility('adminPasswordInput', 'pwdToggleIcon')" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600 transition-colors">
-                        <i id="pwdToggleIcon" class="fa-solid fa-eye"></i>
-                    </button>
-                    <p id="passwordErrorMsg" class="hidden text-xs text-red-500 font-bold mt-2 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-circle-exclamation"></i> 硬入唔可以噢~
-                    </p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="closePasswordModal()" class="w-1/2 bg-slate-100 text-slate-600 font-bold py-2.5 rounded-xl hover:bg-slate-200 transition-all text-xs">
-                        取消
-                    </button>
-                    <button type="submit" class="w-1/2 bg-slate-900 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 active:scale-95 transition-all text-xs">
-                        驗證進入
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- BACK OFFICE MODAL -->
-    <div id="backOfficeModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[85vh] flex flex-col card-shadow border-2 border-slate-200 relative overflow-hidden">
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-bold">
-                        <i class="fa-solid fa-sliders"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-black text-slate-800">後台管理中心</h3>
-                        <p class="text-xs text-slate-500 font-medium">編輯語錄庫、任務難度及專屬日誌</p>
-                    </div>
-                </div>
-                <button onclick="closeBackOfficeModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold text-sm transition-all">
-                    ✕
-                </button>
+    <!-- 5. 5-Cycle Tier Reward Unlocked Modal -->
+    <div id="rewardModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl border border-emerald-200 dark:border-emerald-700 text-center relative">
+            <div class="w-20 h-20 bg-gradient-to-tr from-teal-400 to-emerald-500 text-white rounded-3xl flex items-center justify-center mx-auto mb-4 text-4xl shadow-xl shadow-emerald-500/30 animate-pulse">
+                🏆
             </div>
 
-            <!-- Admin Password Bar -->
-            <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div class="text-left">
-                    <span class="text-xs font-black text-amber-800 uppercase flex items-center gap-1.5"><i class="fa-solid fa-key"></i> 管理員密碼設定</span>
-                    <p class="text-xs text-slate-500 mt-0.5">密碼設定（輸入時需區分大小寫）</p>
-                </div>
-                <button onclick="openChangePasswordPrompt()" class="bg-gradient-to-r from-amber-500 to-energyOrange text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-sm hover:brightness-105 active:scale-95 transition-all shrink-0">
-                    <i class="fa-solid fa-pen-to-square"></i> 修改密碼
-                </button>
+            <span class="text-xs font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800">
+                滿 5 次解鎖大獎
+            </span>
+
+            <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-3" id="rewardModalTitle">恭喜完成第 1 輪簽到！</h3>
+            <p id="rewardModalDesc" class="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4">你已成功堅持 5 次運動冒險！</p>
+
+            <div class="p-4 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-2xl border border-emerald-200 dark:border-emerald-800 mb-5">
+                <p class="text-sm font-black text-emerald-600 dark:text-emerald-400">獲得輪次幸運大獎 🎉</p>
             </div>
 
-            <!-- Back Office Navigation Tabs -->
-            <div class="grid grid-cols-3 border-b border-slate-200 mt-3 mb-1 gap-1.5 sm:gap-2 w-full">
-                <button type="button" id="tabQuotesBtn" onclick="switchBackOfficeTab('quotes')" class="py-2.5 px-1.5 sm:px-3 text-[11px] sm:text-xs font-black rounded-t-xl bg-slate-900 text-white transition-all text-center whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-quote-left"></i><span>勵志語錄庫</span>
-                </button>
-                <button type="button" id="tabTasksBtn" onclick="switchBackOfficeTab('tasks')" class="py-2.5 px-1.5 sm:px-3 text-[11px] sm:text-xs font-black rounded-t-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all text-center whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-sliders text-amber-500"></i><span>任務難度設定</span>
-                </button>
-                <button type="button" id="tabYeYeBtn" onclick="switchBackOfficeTab('yeye')" class="py-2.5 px-1.5 sm:px-3 text-[11px] sm:text-xs font-black rounded-t-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all text-center whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1">
-                    <i class="fa-solid fa-heart text-rose-500"></i><span>冒險與親密日誌編輯</span> (<span id="backOfficeYeYeCount">0</span>)
-                </button>
-            </div>
-
-            <!-- Quotes Container -->
-            <div class="overflow-y-auto my-2 pr-1 space-y-2.5 flex-1" id="backOfficeQuotesContainer"></div>
-
-            <!-- Task Difficulty Config Container -->
-            <div class="overflow-y-auto my-2 pr-1 space-y-3 flex-1 hidden" id="backOfficeTasksContainer">
-                <div class="bg-amber-50/80 border border-amber-200 p-3 rounded-2xl text-xs font-medium text-amber-900 mb-2">
-                    <i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i> 可於此自由設置動態挑戰的起步難度及升級遞增數值：
-                </div>
-                <!-- Task 1 Config -->
-                <div class="bg-white border border-slate-200 p-3 rounded-2xl space-y-2 shadow-sm">
-                    <div class="font-extrabold text-xs text-orange-600 flex items-center gap-1.5">
-                        <i class="fa-solid fa-person-running"></i> Task 1: 單次跑步距離 (km)
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 text-xs">
-                        <div>
-                            <label class="block text-[10px] text-slate-500 font-bold mb-0.5">Lv.1 基礎目標 (km)</label>
-                            <input type="number" step="0.5" id="cfgT1Base" class="w-full border rounded-lg p-1.5 font-bold text-slate-800">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-500 font-bold mb-0.5">每級增加數值 (km)</label>
-                            <input type="number" step="0.5" id="cfgT1Step" class="w-full border rounded-lg p-1.5 font-bold text-slate-800">
-                        </div>
-                    </div>
-                </div>
-                <!-- Task 2 Config -->
-                <div class="bg-white border border-slate-200 p-3 rounded-2xl space-y-2 shadow-sm">
-                    <div class="font-extrabold text-xs text-skyBlue flex items-center gap-1.5">
-                        <i class="fa-solid fa-route"></i> Task 2: 一星期跑量累積 (km)
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 text-xs">
-                        <div>
-                            <label class="block text-[10px] text-slate-500 font-bold mb-0.5">Lv.1 基礎目標 (km)</label>
-                            <input type="number" step="1" id="cfgT2Base" class="w-full border rounded-lg p-1.5 font-bold text-slate-800">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-500 font-bold mb-0.5">每級增加數值 (km)</label>
-                            <input type="number" step="1" id="cfgT2Step" class="w-full border rounded-lg p-1.5 font-bold text-slate-800">
-                        </div>
-                    </div>
-                </div>
-                <!-- Task 3 Config -->
-                <div class="bg-white border border-slate-200 p-3 rounded-2xl space-y-2 shadow-sm">
-                    <div class="font-extrabold text-xs text-grassGreen flex items-center gap-1.5">
-                        <i class="fa-solid fa-stopwatch"></i> Task 3: 單週運動時間 (分鐘)
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 text-xs">
-                        <div>
-                            <label class="block text-[10px] text-slate-500 font-bold mb-0.5">Lv.1 基礎目標 (分鐘)</label>
-                            <input type="number" step="5" id="cfgT3Base" class="w-full border rounded-lg p-1.5 font-bold text-slate-800">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-500 font-bold mb-0.5">每級增加數值 (分鐘)</label>
-                            <input type="number" step="5" id="cfgT3Step" class="w-full border rounded-lg p-1.5 font-bold text-slate-800">
-                        </div>
-                    </div>
-                </div>
-                <!-- Task 4 Config -->
-                <div class="bg-white border border-slate-200 p-3 rounded-2xl space-y-2 shadow-sm">
-                    <div class="font-extrabold text-xs text-purple-600 flex items-center gap-1.5">
-                        <i class="fa-solid fa-layer-group"></i> Task 4: 一週完成不同運動項目 (種)
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 text-xs">
-                        <div>
-                            <label class="block text-[10px] text-slate-500 font-bold mb-0.5">Lv.1 基礎目標 (種)</label>
-                            <input type="number" step="1" id="cfgT4Base" class="w-full border rounded-lg p-1.5 font-bold text-slate-800">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] text-slate-500 font-bold mb-0.5">每級增加數值 (種)</label>
-                            <input type="number" step="1" id="cfgT4Step" class="w-full border rounded-lg p-1.5 font-bold text-slate-800">
-                        </div>
-                    </div>
-                </div>
-                <button onclick="saveTaskDifficultyConfigs()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-2.5 rounded-xl text-xs shadow-md active:scale-95 transition-all">
-                    <i class="fa-solid fa-floppy-disk mr-1"></i> 保存難度設定
-                </button>
-            </div>
-
-            <!-- Secret Logs Container -->
-            <div class="overflow-y-auto my-2 pr-1 space-y-2.5 flex-1 hidden" id="backOfficeYeYeContainer"></div>
-
-            <!-- Modal Footer -->
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                <span id="backofficeFooterText">管理員模式 - 即時預覽及動態編輯</span>
-                <button onclick="closeBackOfficeModal()" class="bg-slate-900 text-white font-bold px-5 py-2 rounded-xl hover:bg-slate-800 transition-all">
-                    關閉後台
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Log Modal -->
-    <div id="editLogModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 card-shadow border-2 border-slate-200 relative">
-            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-                <h3 class="text-base font-black text-slate-800 flex items-center gap-1.5">
-                    <i class="fa-solid fa-pen text-amber-500"></i> 編輯運動日誌 (含日期)
-                </h3>
-                <button onclick="closeEditLogModal()" class="text-slate-400 hover:text-slate-600 text-sm font-bold">✕</button>
-            </div>
-            <form onsubmit="handleSaveEditedLog(event)" class="space-y-3 text-xs">
-                <input type="hidden" id="editLogId">
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">日誌日期/時間</label>
-                    <input type="text" id="editLogDate" required class="w-full border rounded-xl p-2 font-bold text-slate-800 focus:ring-2 focus:ring-amber-500">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">運動項目</label>
-                        <input type="text" id="editLogSport" required class="w-full border rounded-xl p-2 font-bold text-slate-800">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">時間 (分鐘)</label>
-                        <input type="number" id="editLogDuration" required class="w-full border rounded-xl p-2 font-bold text-slate-800">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">辛苦度 (1-10)</label>
-                        <input type="number" min="1" max="10" id="editLogEffort" class="w-full border rounded-xl p-2 font-bold text-slate-800">
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">距離 (km, 可選)</label>
-                        <input type="number" step="0.1" id="editLogDistance" class="w-full border rounded-xl p-2 font-bold text-slate-800">
-                    </div>
-                </div>
-                <div id="editYeYeExtraFields" class="hidden space-y-2 bg-rose-50 border border-rose-200 p-2.5 rounded-xl">
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block font-bold text-rose-800 mb-0.5">舒適度 (1-10)</label>
-                            <input type="number" min="1" max="10" id="editLogComfort" class="w-full border rounded-xl p-1.5 font-bold text-slate-800">
-                        </div>
-                        <div>
-                            <label class="block font-bold text-rose-800 mb-0.5">飽飽度 (1-10)</label>
-                            <input type="number" min="1" max="10" id="editLogFullness" class="w-full border rounded-xl p-1.5 font-bold text-slate-800">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-rose-800 mb-0.5">專屬備注 / 特殊記號</label>
-                        <input type="text" id="editLogNotes" class="w-full border rounded-xl p-1.5 font-bold text-slate-800">
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">心得 / 意見</label>
-                    <textarea id="editLogFeedback" rows="2" class="w-full border rounded-xl p-2 font-bold text-slate-800 resize-none"></textarea>
-                </div>
-                <div class="flex items-center gap-2 pt-2">
-                    <button type="button" onclick="closeEditLogModal()" class="w-1/2 bg-slate-100 text-slate-600 font-bold py-2 rounded-xl">取消</button>
-                    <button type="submit" class="w-1/2 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-xl shadow-md">保存變更</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Toast Notification Banner -->
-    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-        <div class="bg-slate-900 text-white text-xs sm:text-sm font-bold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700">
-            <span id="toastIcon" class="text-base">ℹ️</span>
-            <span id="toastText">訊息提示</span>
+            <a id="rewardWhatsappBtn" href="https://api.whatsapp.com/send?phone=85257989894&text=%E6%88%9A%E6%88%90%E5%8A%9F%E6%89%93%E4%B8%8D%F0%9F%8F%86%E8%A6%81%E9%A0%98%E5%8F%96%E7%8D%8E%E5%8B%B5" target="_blank" rel="noopener noreferrer" onclick="closeRewardModal()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 text-white font-extrabold text-sm shadow-lg shadow-teal-500/30 active:scale-95 transition-all flex items-center justify-center gap-2">
+                <i class="fa-brands fa-whatsapp text-lg"></i>
+                <span>開心領取獎勵！</span>
+            </a>
         </div>
     </div>
 
     <script>
-        const DEFAULT_ENCOURAGEMENTS = [
-            "太棒了！每一滴汗水都是你蛻變的印記！⚡",
-            "運動後的你閃閃發光，繼續保持這股熱情！🔥",
-            "今天的堅持，就是明天更強大自己的基石！💪",
-            "里程碑又推進了一步，你比想像中更堅強！🏃",
-            "挑戰自我成功！給自己一個大大的掌聲！👏",
-            "汗水不會騙人，你的每一分努力都算數！🌟",
-            "活力滿滿！你今天的表現簡直太颯了！⚡",
-            "動起來的感覺真好，繼續燃燒你的運動靈魂吧！🔥",
-            "太厲害了！又完成了一次超棒的冒險簽到！🏆",
-            "堅持是最酷的事情，你今天超酷！✨",
-            "踏出這一步，你就已經超越了昨天的自己！🚀",
-            "能量值滿格！期待你下一次的精彩突破！⚡",
-            "自律給你自由，今天的運動成果超讚！🎯",
-            "每一次揮汗，都是對健康生活最棒的投資！💖",
-            "你的毅力令人驚歎，繼續向更高的目標邁進吧！🌈",
-            "極限就是用來突破的，今天的你閃耀全場！⭐",
-            "運動是最好的解壓藥，享受這份多巴胺的快樂吧！😊",
-            "一步一腳印，你離理想的自己又近了一步！👣",
-            "今日運動達成！你是自己的超級英雄！🦸‍♂️",
-            "永不言棄，運動冒險之路上你最璀璨！💎"
-        ];
-
-        function safeGetStorage(key) {
-            try { return localStorage.getItem(key); } catch (e) { return null; }
+        // Storage Safewrapper
+        function safeGetStorage(key, defaultVal) {
+            try {
+                const item = localStorage.getItem(key);
+                return item ? JSON.parse(item) : defaultVal;
+            } catch(e) {
+                return defaultVal;
+            }
         }
 
         function safeSetStorage(key, val) {
-            try { localStorage.setItem(key, val); } catch (e) {}
+            try {
+                localStorage.setItem(key, JSON.stringify(val));
+            } catch(e) {}
         }
 
-        function getISOWeekString(d) {
+        // Toast Alert System
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-5 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white text-xs font-bold px-4 py-2.5 rounded-2xl shadow-xl z-50 border border-slate-700 backdrop-blur-sm transition-all duration-300 opacity-0 transform -translate-y-2';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', '-translate-y-2');
+            }, 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // Default 20 Quotes
+        const DEFAULT_QUOTES = [
+            "今天跨出的每一步，都是在向更強大的自己致敬！",
+            "運動不是為了超越別人，而是為了遇見更好的自己！",
+            "汗水是脂肪的眼淚，堅持是成功的基石！",
+            "姍姍一定做得島！你的努力時間都看得到！",
+            "沒有白走的路，每一步跑步都算數！",
+            "每一次呼吸與堅持，都在為你的夢想加分！",
+            "突破極限，解鎖無限可能，今天又是充滿活力的一天！",
+            "別小看今天的這點堅持，它會匯聚成未來的耀眼光芒！",
+            "運動後的爽快感，只有真正出汗的人才懂！",
+            "今天你對自己夠狠，明天世界就會對你溫柔！",
+            "保持熱愛，奔赴山海，今天的冒險圓滿達成！",
+            "強大的自信，源於一次又一次不放棄的堅持！",
+            "今天的辛苦，是給明天自己最好的禮物！",
+            "腳步不停，青春不息，姍姍最棒！",
+            "只要你開始跑，你就已經贏過了昨天的自己！",
+            "把運動變成習慣，生活自然會給你不一樣的驚喜！",
+            "勇敢踏出第一步，接下來的風景會超乎想像！",
+            "每一個流汗的瞬間，都是靈魂在歡呼！",
+            "堅持不是咬牙切齒，而是把熱愛變成每天的習慣！",
+            "太棒了！又完成了一次精彩的冒險打卡！"
+        ];
+
+        // 5-Cycle Tier Rewards Base Definition
+        const REWARD_TIERS_ALL = [
+            { cycle: 1, title: "第 1 輪冒險考驗", icon: "🥉", reward: "【獎牌 + 能量電解質特飲】" },
+            { cycle: 2, title: "第 2 輪極限突破", icon: "🥈", reward: "【專業運動高性能跑鞋 / 裝備】" },
+            { cycle: 3, title: "第 3 輪鋼鐵意志", icon: "🥇", reward: "【高級運動水壺 & 輕量背心】" },
+            { cycle: 4, title: "第 4 輪王者誕生", icon: "💎", reward: "【運動按摩槍 / 肌肉放鬆套裝】" },
+            { cycle: 5, title: "第 5 輪傳奇成就", icon: "🏆", reward: "【頂級運動手錶 / 全程馬拉松贊助】" },
+        ];
+
+        // App State
+        let currentTheme = safeGetStorage('app_theme', 'light');
+        let currentSport = '跑步';
+        let adminPassword = safeGetStorage('admin_password', 'Sexs'); // Case sensitive, default Sexs
+        let quotes = safeGetStorage('app_quotes', DEFAULT_QUOTES);
+        let logs = safeGetStorage('app_logs', []);
+        
+        let checkinStats = safeGetStorage('app_checkin_stats', {
+            totalCheckins: 0,
+            completedCycles: 0,
+            lastResetWeek: getISOWeek(new Date()),
+            lastResetMonth: new Date().getMonth()
+        });
+
+        let taskDifficulty = safeGetStorage('app_task_difficulty', {
+            task1: { target: 8, step: 1 },    // Single Run km
+            task2: { target: 20, step: 5 },   // Weekly Run Volume km
+            task3: { target: 150, step: 30 }, // Weekly Workout Min
+            task4: { target: 3, step: 1 }     // Diverse Sports Count
+        });
+
+        let taskProgress = safeGetStorage('app_task_progress', {
+            weeklyRunKm: 0,
+            weeklyWorkoutMin: 0,
+            weeklySportsSet: []
+        });
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkWeeklyReset();
+            setTheme(currentTheme);
+            updateCharCount();
+            updateUI();
+        });
+
+        // Helper: Get ISO Week Number
+        function getISOWeek(d) {
             const date = new Date(d.getTime());
             date.setHours(0, 0, 0, 0);
             date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
             const week1 = new Date(date.getFullYear(), 0, 4);
-            const weekNum = 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
-            return `${date.getFullYear()}-W${weekNum}`;
+            return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
         }
 
-        let appState = {
-            totalCheckins: 0,
-            history: [],
-            adminPassword: safeGetStorage('adminPassword') || 'Sexs',
-            taskLevels: { t1: 1, t2: 1, t3: 1, t4: 1 },
-            taskProgress: { t1: 0, t2: 0, t3: 0, t4: 0, t4Sports: [] },
-            taskConfigs: {
-                t1Base: 8, t1Step: 1,
-                t2Base: 20, t2Step: 5,
-                t3Base: 120, t3Step: 20,
-                t4Base: 3, t4Step: 1
-            },
-            encouragements: [...DEFAULT_ENCOURAGEMENTS],
-            lastWeekReset: getISOWeekString(new Date())
-        };
-
-        function loadSavedState() {
-            const saved = safeGetStorage('sport_adventure_state_v2');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    appState = { ...appState, ...parsed };
-                } catch(e) {}
-            }
-            checkWeeklyReset();
-        }
-
-        function saveState() {
-            safeSetStorage('sport_adventure_state_v2', JSON.stringify(appState));
-        }
-
+        // Automatic Weekly Reset Check (Mondays) & Monthly Reset
         function checkWeeklyReset() {
-            const currentWeek = getISOWeekString(new Date());
-            if (appState.lastWeekReset !== currentWeek) {
-                appState.taskProgress.t2 = 0;
-                appState.taskProgress.t3 = 0;
-                appState.taskProgress.t4 = 0;
-                appState.taskProgress.t4Sports = [];
-                appState.lastWeekReset = currentWeek;
-                saveState();
+            const now = new Date();
+            const currentWeek = getISOWeek(now);
+            const currentMonth = now.getMonth();
+
+            // Monthly Reset Check: 單次跑步突破 只會以月而清空
+            if (checkinStats.lastResetMonth !== currentMonth) {
+                checkinStats.lastResetMonth = currentMonth;
+            }
+
+            // Weekly Reset Check
+            if (checkinStats.lastResetWeek !== currentWeek) {
+                taskProgress.weeklyRunKm = 0;
+                taskProgress.weeklyWorkoutMin = 0;
+                taskProgress.weeklySportsSet = [];
+                checkinStats.lastResetWeek = currentWeek;
+
+                safeSetStorage('app_task_progress', taskProgress);
+                safeSetStorage('app_task_difficulty', taskDifficulty);
+                safeSetStorage('app_checkin_stats', checkinStats);
             }
         }
 
-        function showToast(msg, type = 'info') {
-            const toast = document.getElementById('toastNotification');
-            const toastText = document.getElementById('toastText');
-            const toastIcon = document.getElementById('toastIcon');
+        // Theme Switcher Logic
+        function setTheme(theme) {
+            currentTheme = theme;
+            safeSetStorage('app_theme', theme);
 
-            if (!toast) return;
+            const body = document.body;
+            const btnLight = document.getElementById('themeLightBtn');
+            const btnDark = document.getElementById('themeDarkBtn');
+            const sexBtn = document.getElementById('sexSportBtn');
 
-            toastText.innerText = msg;
-            if (type === 'success') toastIcon.innerText = '✅';
-            else if (type === 'warning') toastIcon.innerText = '⚠️';
-            else toastIcon.innerText = 'ℹ️';
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+            if (theme === 'dark') {
+                body.classList.add('dark-mode', 'dark');
+                btnDark.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-700 text-slate-100 shadow-sm';
+                btnLight.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200';
+                sexBtn.classList.remove('hidden');
+            } else {
+                body.classList.remove('dark-mode', 'dark');
+                btnLight.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-white text-slate-800 shadow-sm';
+                btnDark.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200';
+                sexBtn.classList.add('hidden');
+                if (currentSport === '曳曳') {
+                    selectSport('跑步');
+                }
+            }
         }
 
-        function openBackOfficeModal() {
-            document.getElementById('adminPasswordInput').value = '';
+        // Sport Selector Handler
+        function selectSport(sportName) {
+            currentSport = sportName;
+
+            document.querySelectorAll('.sport-btn').forEach(btn => {
+                const isSexBtn = btn.id === 'sexSportBtn';
+                const isHidden = isSexBtn && currentTheme !== 'dark';
+                
+                let baseClass = 'sport-btn p-2.5 rounded-2xl border text-xs font-bold transition flex flex-col items-center gap-1.5';
+                if (isHidden) {
+                    baseClass += ' hidden';
+                }
+
+                if (btn.dataset.sport === sportName) {
+                    btn.className = `${baseClass} border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-300 shadow-sm`;
+                } else {
+                    btn.className = `${baseClass} border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:border-emerald-300`;
+                }
+            });
+
+            const customSportGroup = document.getElementById('customSportFieldGroup');
+            const distGroup = document.getElementById('distanceFieldGroup');
+            const intimateGroup = document.getElementById('intimateFieldsGroup');
+
+            if (sportName === '其他') {
+                customSportGroup.classList.remove('hidden');
+                document.getElementById('customSportInput').setAttribute('required', 'required');
+            } else {
+                customSportGroup.classList.add('hidden');
+                document.getElementById('customSportInput').removeAttribute('required');
+            }
+
+            if (['跑步', '單車', '行山'].includes(sportName)) {
+                distGroup.classList.remove('hidden');
+                document.getElementById('distanceInput').setAttribute('required', 'required');
+            } else {
+                distGroup.classList.add('hidden');
+                document.getElementById('distanceInput').removeAttribute('required');
+            }
+
+            if (sportName === '曳曳') {
+                intimateGroup.classList.remove('hidden');
+            } else {
+                intimateGroup.classList.add('hidden');
+            }
+        }
+
+        // Character count validation for Feedback
+        function updateCharCount() {
+            const feedbackEl = document.getElementById('feedbackInput');
+            if (!feedbackEl) return;
+            const val = feedbackEl.value.trim();
+            const charCountEl = document.getElementById('charCount');
+            if (!charCountEl) return;
+            charCountEl.innerText = `${val.length} / 10 字${currentSport === '曳曳' ? ' (至少10字)' : ''}`;
+
+            if (currentSport === '曳曳' && val.length < 10) {
+                charCountEl.className = 'text-[10px] text-rose-500 font-bold';
+            } else {
+                charCountEl.className = 'text-[10px] text-emerald-500 font-bold';
+            }
+        }
+
+        // Handle Workout Submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const duration = parseFloat(document.getElementById('durationInput').value) || 0;
+            const effort = parseInt(document.getElementById('effortInput').value) || 5;
+            const feedback = document.getElementById('feedbackInput').value.trim();
+            const distance = parseFloat(document.getElementById('distanceInput').value) || 0;
+
+            let finalSportName = currentSport;
+            if (currentSport === '其他') {
+                const customVal = document.getElementById('customSportInput').value.trim();
+                if (!customVal) {
+                    showToast('請填寫實際運動名稱！');
+                    return;
+                }
+                finalSportName = customVal;
+            }
+
+            if (currentSport === '曳曳' && feedback.length < 10) {
+                showToast('請至少填寫 10 個字的心得或備注再提交噢！');
+                return;
+            }
+
+            const now = new Date();
+            const newLog = {
+                id: 'log_' + Date.now(),
+                timestamp: Date.now(),
+                date: now.toLocaleString('zh-TW', { hour12: false }),
+                sport: finalSportName,
+                duration: duration,
+                effort: effort,
+                distance: distance,
+                feedback: feedback,
+                comfort: currentSport === '曳曳' ? parseInt(document.getElementById('comfortInput').value) : null,
+                fullness: currentSport === '曳曳' ? parseInt(document.getElementById('fullnessInput').value) : null
+            };
+
+            // Save log
+            logs.unshift(newLog);
+            safeSetStorage('app_logs', logs);
+
+            // Update Total Checkin Count
+            checkinStats.totalCheckins += 1;
+
+            // Update Task Progress
+            if (['跑步', '單車', '行山'].includes(currentSport)) {
+                if (currentSport === '跑步') {
+                    taskProgress.weeklyRunKm += distance;
+                }
+            }
+            taskProgress.weeklyWorkoutMin += duration;
+            if (!taskProgress.weeklySportsSet.includes(finalSportName)) {
+                taskProgress.weeklySportsSet.push(finalSportName);
+            }
+
+            safeSetStorage('app_task_progress', taskProgress);
+            safeSetStorage('app_checkin_stats', checkinStats);
+
+            // Check Tasks
+            if (currentSport === '跑步' && distance >= taskDifficulty.task1.target) {
+                taskDifficulty.task1.target += taskDifficulty.task1.step;
+                showToast(`🎉 恭喜達成單次跑步 ${distance}km！目標升級為 ${taskDifficulty.task1.target}km！`);
+            }
+            if (taskProgress.weeklyRunKm >= taskDifficulty.task2.target) {
+                taskDifficulty.task2.target += taskDifficulty.task2.step;
+                showToast(`🎉 恭喜達成週跑量目標！目標升級為 ${taskDifficulty.task2.target}km！`);
+            }
+            if (taskProgress.weeklyWorkoutMin >= taskDifficulty.task3.target) {
+                taskDifficulty.task3.target += taskDifficulty.task3.step;
+                showToast(`🎉 恭喜達成週運動時長目標！目標升級為 ${taskDifficulty.task3.target} 分鐘！`);
+            }
+            if (taskProgress.weeklySportsSet.length >= taskDifficulty.task4.target) {
+                taskDifficulty.task4.target += taskDifficulty.task4.step;
+                showToast(`🎉 恭喜達成每週多元體驗種類！目標升級為 ${taskDifficulty.task4.target} 種運動！`);
+            }
+
+            safeSetStorage('app_task_difficulty', taskDifficulty);
+
+            const currentCycleIndex = Math.floor((checkinStats.totalCheckins - 1) / 5);
+            const isInCycleCount = checkinStats.totalCheckins % 5;
+
+            // Reset Form - Default 舒適度 & 飽飽度: 2
+            document.getElementById('checkinForm').reset();
+            document.getElementById('effortVal').innerText = '5 / 10';
+            document.getElementById('comfortVal').innerText = '2 / 10';
+            document.getElementById('fullnessVal').innerText = '2 / 10';
+            document.getElementById('comfortInput').value = 2;
+            document.getElementById('fullnessInput').value = 2;
+            selectSport('跑步');
+            updateCharCount();
+
+            updateUI();
+
+            // Trigger Quote Popup
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('successQuoteText').innerText = `"${randomQuote}"`;
+            document.getElementById('checkinSuccessModal').classList.remove('hidden');
+
+            // Milestone reward
+            if (isInCycleCount === 0 && checkinStats.totalCheckins > 0) {
+                setTimeout(() => {
+                    openRewardModal(currentCycleIndex);
+                }, 400);
+            }
+        }
+
+        function closeCheckinSuccessModal() {
+            document.getElementById('checkinSuccessModal').classList.add('hidden');
+        }
+
+        function openRewardModal(cycleIndex) {
+            const tier = REWARD_TIERS_ALL[cycleIndex % REWARD_TIERS_ALL.length];
+            document.getElementById('rewardModalTitle').innerText = `恭喜完成 ${tier.title}！`;
+            
+            const msg = encodeURIComponent("我成功打卡🏆要領取獎勵");
+            const waUrl = `https://api.whatsapp.com/send?phone=85257989894&text=${msg}`;
+            const btn = document.getElementById('rewardWhatsappBtn');
+            if (btn) btn.href = waUrl;
+
+            document.getElementById('rewardModal').classList.remove('hidden');
+
+            try {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } catch(e){}
+        }
+
+        function closeRewardModal() {
+            document.getElementById('rewardModal').classList.add('hidden');
+        }
+
+        // Claim Reward via WhatsApp (+852 57989894)
+        function claimRewardAndWhatsapp() {
+            closeRewardModal();
+            const msg = encodeURIComponent("我成功打卡🏆要領取獎勵");
+            window.location.href = `https://api.whatsapp.com/send?phone=85257989894&text=${msg}`;
+        }
+
+        // Password & Back Office Modal Handlers
+        function openPasswordModal() {
+            document.getElementById('adminPwdInput').value = '';
             document.getElementById('passwordErrorMsg').classList.add('hidden');
             document.getElementById('passwordModal').classList.remove('hidden');
         }
 
         function closePasswordModal() {
             document.getElementById('passwordModal').classList.add('hidden');
-        }
-
-        function verifyAdminPassword(e) {
-            e.preventDefault();
-            const input = document.getElementById('adminPasswordInput').value;
-            if (input === appState.adminPassword) {
-                closePasswordModal();
-                renderBackOfficeQuotes();
-                renderBackOfficeLogs();
-                document.getElementById('backOfficeModal').classList.remove('hidden');
-                const pwdDisp = document.getElementById('currentPasswordDisplay');
-                if (pwdDisp) pwdDisp.innerText = appState.adminPassword;
-            } else {
-                document.getElementById('passwordErrorMsg').classList.remove('hidden');
-            }
-        }
-
-        function closeBackOfficeModal() {
-            document.getElementById('backOfficeModal').classList.add('hidden');
         }
 
         function togglePasswordVisibility(inputId, iconId) {
@@ -852,375 +991,183 @@
             }
         }
 
-        function openChangePasswordPrompt() {
-            const newPwd = prompt('請輸入新的後台管理員密碼 (需區分大小寫)：', appState.adminPassword);
-            if (newPwd && newPwd.trim()) {
-                appState.adminPassword = newPwd.trim();
-                safeSetStorage('adminPassword', appState.adminPassword);
-                saveState();
-                const pwdDisp = document.getElementById('currentPasswordDisplay');
-                if (pwdDisp) pwdDisp.innerText = appState.adminPassword;
-                showToast('密碼已成功修改！', 'success');
+        function verifyAdminPassword() {
+            const pwdInput = document.getElementById('adminPwdInput').value;
+            if (pwdInput === adminPassword) {
+                closePasswordModal();
+                openBackOfficeModal();
+            } else {
+                document.getElementById('passwordErrorMsg').classList.remove('hidden');
             }
+        }
+
+        function openBackOfficeModal() {
+            renderBackOfficeQuotes();
+            renderBackOfficeTasksConfig();
+            renderBackOfficeLogs();
+            document.getElementById('backOfficeModal').classList.remove('hidden');
+        }
+
+        function closeBackOfficeModal() {
+            document.getElementById('backOfficeModal').classList.add('hidden');
         }
 
         function switchBackOfficeTab(tab) {
-            const quotesContainer = document.getElementById('backOfficeQuotesContainer');
-            const tasksContainer = document.getElementById('backOfficeTasksContainer');
-            const yeyeContainer = document.getElementById('backOfficeYeYeContainer');
-
-            const btnQuotes = document.getElementById('tabQuotesBtn');
-            const btnTasks = document.getElementById('tabTasksBtn');
-            const btnYeYe = document.getElementById('tabYeYeBtn');
-
-            quotesContainer.classList.add('hidden');
-            tasksContainer.classList.add('hidden');
-            yeyeContainer.classList.add('hidden');
-
-            const inactiveClass = "py-2.5 px-1.5 sm:px-3 text-[11px] sm:text-xs font-black rounded-t-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all text-center whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1";
-            const activeClass = "py-2.5 px-1.5 sm:px-3 text-[11px] sm:text-xs font-black rounded-t-xl bg-slate-900 text-white transition-all text-center whitespace-nowrap overflow-hidden text-ellipsis flex items-center justify-center gap-1";
-
-            btnQuotes.className = inactiveClass;
-            btnTasks.className = inactiveClass;
-            btnYeYe.className = inactiveClass;
-
-            if (tab === 'quotes') {
-                quotesContainer.classList.remove('hidden');
-                btnQuotes.className = activeClass;
-            } else if (tab === 'tasks') {
-                tasksContainer.classList.remove('hidden');
-                btnTasks.className = activeClass;
-                // Populate current task configs
-                document.getElementById('cfgT1Base').value = appState.taskConfigs.t1Base;
-                document.getElementById('cfgT1Step').value = appState.taskConfigs.t1Step;
-                document.getElementById('cfgT2Base').value = appState.taskConfigs.t2Base;
-                document.getElementById('cfgT2Step').value = appState.taskConfigs.t2Step;
-                document.getElementById('cfgT3Base').value = appState.taskConfigs.t3Base;
-                document.getElementById('cfgT3Step').value = appState.taskConfigs.t3Step;
-                document.getElementById('cfgT4Base').value = appState.taskConfigs.t4Base;
-                document.getElementById('cfgT4Step').value = appState.taskConfigs.t4Step;
-            } else if (tab === 'yeye') {
-                yeyeContainer.classList.remove('hidden');
-                btnYeYe.className = activeClass;
-                renderBackOfficeLogs();
-            }
-        }
-
-        function selectSport(sportName, btnElement) {
-            document.getElementById('selectedSportInput').value = sportName;
-
-            const btns = document.querySelectorAll('.sport-btn');
-            btns.forEach(b => {
-                b.classList.remove('border-energyOrange', 'bg-orange-50', 'ring-2', 'ring-energyOrange');
-                b.classList.add('border-slate-200', 'bg-slate-50');
+            document.querySelectorAll('.bo-tab-btn').forEach(btn => {
+                btn.className = 'bo-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition whitespace-nowrap text-slate-500 hover:text-slate-800 dark:hover:text-slate-200';
             });
 
-            if (btnElement) {
-                btnElement.classList.remove('border-slate-200', 'bg-slate-50');
-                btnElement.classList.add('border-energyOrange', 'bg-orange-50', 'ring-2', 'ring-energyOrange');
-            }
+            document.getElementById('tabContentQuotes').classList.add('hidden');
+            document.getElementById('tabContentTasks').classList.add('hidden');
+            document.getElementById('tabContentLogs').classList.add('hidden');
 
-            const otherContainer = document.getElementById('otherSportFieldContainer');
-            const distanceContainer = document.getElementById('distanceFieldContainer');
-            const yeYeContainer = document.getElementById('yeYeFieldsContainer');
-            const feedbackContainer = document.getElementById('feedbackContainer');
-
-            otherContainer.classList.toggle('hidden', sportName !== '其他');
-            distanceContainer.classList.toggle('hidden', !['跑步', '單車', '行山'].includes(sportName));
-            yeYeContainer.classList.toggle('hidden', sportName !== '曳曳');
-            
-            // Only show feedback field when sport is '曳曳'
-            if (feedbackContainer) {
-                feedbackContainer.classList.toggle('hidden', sportName !== '曳曳');
-            }
-
-            const distanceInput = document.getElementById('distanceInput');
-            if (['跑步', '單車', '行山'].includes(sportName)) {
-                distanceInput.setAttribute('required', 'required');
-            } else {
-                distanceInput.removeAttribute('required');
+            if (tab === 'quotes') {
+                document.getElementById('tabBtnQuotes').className = 'bo-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-sm';
+                document.getElementById('tabContentQuotes').classList.remove('hidden');
+            } else if (tab === 'tasks') {
+                document.getElementById('tabBtnTasks').className = 'bo-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-sm';
+                document.getElementById('tabContentTasks').classList.remove('hidden');
+            } else if (tab === 'logs') {
+                document.getElementById('tabBtnLogs').className = 'bo-tab-btn py-2 px-1 rounded-xl text-xs font-bold transition whitespace-nowrap bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-sm';
+                document.getElementById('tabContentLogs').classList.remove('hidden');
             }
         }
 
-        function updateCharCount() {
-            const feedback = document.getElementById('feedbackInput').value.trim();
-            const countLabel = document.getElementById('charCountLabel');
-            const valMsg = document.getElementById('validationMsg');
-            
-            if (countLabel) countLabel.innerText = `${feedback.length} / 10 字`;
-            if (valMsg && feedback.length >= 10) {
-                valMsg.classList.add('hidden');
-            }
-        }
-
-        function handleFormSubmit(e) {
-            e.preventDefault();
-            const sportType = document.getElementById('selectedSportInput').value;
-            if (!sportType) {
-                showToast('請選擇運動項目！', 'warning');
-                return;
-            }
-
-            const feedback = document.getElementById('feedbackInput').value.trim();
-            
-            // Only validate feedback length (min 10 characters) if the sport type is '曳曳'
-            if (sportType === '曳曳') {
-                if (feedback.length < 10) {
-                    document.getElementById('validationMsg').classList.remove('hidden');
-                    return;
-                }
-            }
-
-            let displaySport = sportType;
-            if (sportType === '其他') {
-                const customSport = document.getElementById('otherSportInput').value.trim();
-                displaySport = customSport || '其他';
-            }
-
-            const duration = parseFloat(document.getElementById('durationInput').value) || 0;
-            const effort = parseInt(document.getElementById('effortInput').value) || 5;
-            let distance = null;
-            if (['跑步', '單車', '行山'].includes(sportType)) {
-                distance = parseFloat(document.getElementById('distanceInput').value) || 0;
-            }
-
-            let comfort = null, fullness = null, notes = null;
-            if (sportType === '曳曳') {
-                comfort = parseInt(document.getElementById('comfortInput').value) || 8;
-                fullness = parseInt(document.getElementById('fullnessInput').value) || 8;
-                notes = document.getElementById('yeYeNoteInput').value.trim();
-            }
-
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-
-            const newLog = {
-                id: Date.now(),
-                date: dateStr,
-                originalType: sportType,
-                sport: displaySport,
-                duration: duration,
-                effort: effort,
-                distance: distance,
-                comfort: comfort,
-                fullness: fullness,
-                notes: notes,
-                feedback: feedback
-            };
-
-            appState.history.unshift(newLog);
-            appState.totalCheckins += 1;
-
-            updateTaskProgress(newLog);
-            saveState();
-            updateUI();
-
-            // Reset form
-            document.getElementById('workoutForm').reset();
-            selectSport('跑步', document.querySelectorAll('.sport-btn')[0]);
-
-            // Show confirmation
-            const randomQuote = appState.encouragements[Math.floor(Math.random() * appState.encouragements.length)];
-            document.getElementById('encouragementQuoteText').innerText = randomQuote;
-            document.getElementById('checkinSuccessModal').classList.remove('hidden');
-            fireConfetti();
-
-            // Check if reached milestone
-            if (appState.totalCheckins % 5 === 0) {
-                setTimeout(() => {
-                    const cycle = Math.ceil(appState.totalCheckins / 5);
-                    document.getElementById('modalRewardText').innerText = `獲得第 ${cycle} 輪終極大獎禮包！恭喜突破極限！🏆`;
-                    document.getElementById('rewardModal').classList.remove('hidden');
-                }, 800);
-            }
-        }
-
-        function updateTaskProgress(newLog) {
-            if (!appState.taskProgress) {
-                appState.taskProgress = { t1: 0, t2: 0, t3: 0, t4: 0, t4Sports: [] };
-            }
-
-            if (newLog.originalType === '跑步' && newLog.distance) {
-                if (newLog.distance > appState.taskProgress.t1) {
-                    appState.taskProgress.t1 = newLog.distance;
-                }
-                appState.taskProgress.t2 = (appState.taskProgress.t2 || 0) + newLog.distance;
-            }
-
-            if (newLog.duration) {
-                appState.taskProgress.t3 = (appState.taskProgress.t3 || 0) + newLog.duration;
-            }
-
-            if (!appState.taskProgress.t4Sports) appState.taskProgress.t4Sports = [];
-            if (newLog.sport && !appState.taskProgress.t4Sports.includes(newLog.sport)) {
-                appState.taskProgress.t4Sports.push(newLog.sport);
-                appState.taskProgress.t4 = appState.taskProgress.t4Sports.length;
-            }
-        }
-
-        function claimTaskReward(taskId) {
-            if (taskId === 1) appState.taskLevels.t1 += 1;
-            if (taskId === 2) appState.taskLevels.t2 += 1;
-            if (taskId === 3) appState.taskLevels.t3 += 1;
-            if (taskId === 4) appState.taskLevels.t4 += 1;
-
-            saveState();
-            updateUI();
-            fireConfetti();
-            showToast('恭喜完成挑戰！目標難度已升級！⚡', 'success');
-        }
-
-        function saveTaskDifficultyConfigs() {
-            appState.taskConfigs = {
-                t1Base: parseFloat(document.getElementById('cfgT1Base').value) || 8,
-                t1Step: parseFloat(document.getElementById('cfgT1Step').value) || 1,
-                t2Base: parseFloat(document.getElementById('cfgT2Base').value) || 20,
-                t2Step: parseFloat(document.getElementById('cfgT2Step').value) || 5,
-                t3Base: parseFloat(document.getElementById('cfgT3Base').value) || 120,
-                t3Step: parseFloat(document.getElementById('cfgT3Step').value) || 20,
-                t4Base: parseFloat(document.getElementById('cfgT4Base').value) || 3,
-                t4Step: parseFloat(document.getElementById('cfgT4Step').value) || 1
-            };
-            saveState();
-            updateUI();
-            showToast('任務難度設定已保存！', 'success');
-        }
-
+        // Back Office Tab 1: Quotes
         function renderBackOfficeQuotes() {
-            const container = document.getElementById('backOfficeQuotesContainer');
-            if (!container) return;
+            const container = document.getElementById('quotesListContainer');
+            document.getElementById('quotesCount').innerText = quotes.length;
+            container.innerHTML = '';
 
-            container.innerHTML = `
-                <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-bold text-slate-500">庫存語錄共 ${appState.encouragements.length} 條</span>
-                    <button onclick="addQuotePrompt()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-3 py-1 rounded-lg shadow-sm transition-all">
-                        <i class="fa-solid fa-plus mr-1"></i> 新增語錄
-                    </button>
-                </div>
-            ` + appState.encouragements.map((q, idx) => `
-                <div class="bg-slate-50 border border-slate-200 p-2.5 rounded-xl flex items-center justify-between gap-2 text-xs">
-                    <span class="font-bold text-slate-700 truncate"><span class="text-amber-500 mr-1.5">#${idx+1}</span> ${q}</span>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                        <button onclick="testQuoteModal('${q.replace(/'/g, "\\'")}')" class="bg-sky-100 hover:bg-sky-200 text-skyBlue px-2 py-1 rounded-md font-bold text-[10px]">預覽</button>
-                        <button onclick="editQuotePrompt(${idx})" class="bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-1 rounded-md font-bold text-[10px]">編輯</button>
-                        <button onclick="deleteQuote(${idx})" class="bg-rose-100 hover:bg-rose-200 text-rose-600 px-2 py-1 rounded-md font-bold text-[10px]">刪除</button>
+            quotes.forEach((q, idx) => {
+                const div = document.createElement('div');
+                div.className = 'p-3 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 flex justify-between items-center gap-2 text-xs';
+                div.innerHTML = `
+                    <span class="font-medium text-slate-800 dark:text-slate-200">${idx + 1}. "${q}"</span>
+                    <div class="flex gap-1 flex-shrink-0">
+                        <button onclick="editQuotePrompt(${idx})" class="p-1.5 text-emerald-500 hover:text-emerald-600"><i class="fa-solid fa-pen"></i></button>
+                        <button onclick="deleteQuote(${idx})" class="p-1.5 text-rose-500 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                </div>
-            `).join('');
+                `;
+                container.appendChild(div);
+            });
         }
 
-        function addQuotePrompt() {
-            const q = prompt('請輸入新的簽到勵志語錄：');
-            if (q && q.trim()) {
-                appState.encouragements.push(q.trim());
-                saveState();
+        function addNewQuotePrompt() {
+            const newQ = prompt('請輸入新增加的冒險勵志語錄：');
+            if (newQ && newQ.trim()) {
+                quotes.push(newQ.trim());
+                safeSetStorage('app_quotes', quotes);
                 renderBackOfficeQuotes();
-                showToast('已新增語錄！', 'success');
+                showToast('已新增勵志語錄！');
             }
         }
 
         function editQuotePrompt(idx) {
-            const old = appState.encouragements[idx];
-            const q = prompt('編輯語錄：', old);
-            if (q && q.trim()) {
-                appState.encouragements[idx] = q.trim();
-                saveState();
+            const updated = prompt('修改勵志語錄：', quotes[idx]);
+            if (updated && updated.trim()) {
+                quotes[idx] = updated.trim();
+                safeSetStorage('app_quotes', quotes);
                 renderBackOfficeQuotes();
-                showToast('語錄已修改！', 'success');
+                showToast('語錄修改成功！');
             }
         }
 
         function deleteQuote(idx) {
-            if (confirm('確定要刪除這條語錄嗎？')) {
-                appState.encouragements.splice(idx, 1);
-                saveState();
-                renderBackOfficeQuotes();
-                showToast('已刪除語錄！', 'info');
+            if (quotes.length <= 1) {
+                showToast('至少需保留 1 條語錄！');
+                return;
             }
+            quotes.splice(idx, 1);
+            safeSetStorage('app_quotes', quotes);
+            renderBackOfficeQuotes();
+            showToast('已刪除語錄！');
         }
 
-        function testQuoteModal(q) {
-            document.getElementById('encouragementQuoteText').innerText = q;
-            document.getElementById('checkinSuccessModal').classList.remove('hidden');
+        // Back Office Tab 2: Task Configurations
+        function renderBackOfficeTasksConfig() {
+            document.getElementById('cfgTask1Target').value = taskDifficulty.task1.target;
+            document.getElementById('cfgTask1Step').value = taskDifficulty.task1.step;
+
+            document.getElementById('cfgTask2Target').value = taskDifficulty.task2.target;
+            document.getElementById('cfgTask2Step').value = taskDifficulty.task2.step;
+
+            document.getElementById('cfgTask3Target').value = taskDifficulty.task3.target;
+            document.getElementById('cfgTask3Step').value = taskDifficulty.task3.step;
+
+            document.getElementById('cfgTask4Target').value = taskDifficulty.task4.target;
+            document.getElementById('cfgTask4Step').value = taskDifficulty.task4.step;
         }
 
+        function saveTaskDifficultyConfigs() {
+            taskDifficulty.task1.target = parseFloat(document.getElementById('cfgTask1Target').value) || 8;
+            taskDifficulty.task1.step = parseFloat(document.getElementById('cfgTask1Step').value) || 1;
+
+            taskDifficulty.task2.target = parseFloat(document.getElementById('cfgTask2Target').value) || 20;
+            taskDifficulty.task2.step = parseFloat(document.getElementById('cfgTask2Step').value) || 5;
+
+            taskDifficulty.task3.target = parseFloat(document.getElementById('cfgTask3Target').value) || 150;
+            taskDifficulty.task3.step = parseFloat(document.getElementById('cfgTask3Step').value) || 30;
+
+            taskDifficulty.task4.target = parseFloat(document.getElementById('cfgTask4Target').value) || 3;
+            taskDifficulty.task4.step = parseFloat(document.getElementById('cfgTask4Step').value) || 1;
+
+            safeSetStorage('app_task_difficulty', taskDifficulty);
+            updateUI();
+            showToast('任務難度設定已儲存！');
+        }
+
+        // Back Office Tab 3: Admin History Logs
         function renderBackOfficeLogs() {
-            const container = document.getElementById('backOfficeYeYeContainer');
-            const badgeCount = document.getElementById('backOfficeYeYeCount');
-            if (!container) return;
+            const container = document.getElementById('adminLogsContainer');
+            container.innerHTML = '';
 
-            if (badgeCount) badgeCount.innerText = appState.history.length;
-
-            if (!appState.history || appState.history.length === 0) {
-                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs font-bold">尚無冒險與親密日誌紀錄</div>`;
+            if (logs.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">尚無冒險紀錄</p>`;
                 return;
             }
 
-            container.innerHTML = appState.history.map(log => {
-                const isYeYe = log.originalType === '曳曳' || log.sport === '曳曳';
-                return `
-                    <div class="bg-white border ${isYeYe ? 'border-rose-200 bg-rose-50/40' : 'border-slate-200'} p-3 rounded-2xl space-y-2 text-xs shadow-sm">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2">
-                                <span class="font-black ${isYeYe ? 'text-rose-600' : 'text-slate-800'}">${log.sport}</span>
-                                <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md font-bold">${log.date}</span>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <button onclick="openEditLogModal(${log.id})" class="bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-1 rounded-md font-bold text-[10px]">
-                                    <i class="fa-solid fa-pen mr-1"></i>編輯
-                                </button>
-                                <button onclick="deleteLog(${log.id})" class="bg-rose-100 hover:bg-rose-200 text-rose-600 px-2 py-1 rounded-md font-bold text-[10px]">
-                                    <i class="fa-solid fa-trash mr-1"></i>刪除
-                                </button>
-                            </div>
+            logs.forEach(log => {
+                const div = document.createElement('div');
+                const isIntimate = log.sport === '曳曳';
+                div.className = `p-3 rounded-2xl border text-xs relative ${isIntimate ? 'bg-rose-50/80 border-rose-200 dark:bg-rose-950/40 dark:border-rose-900' : 'bg-slate-50 border-slate-200 dark:bg-slate-900/50 dark:border-slate-700'}`;
+                
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <div class="flex items-center gap-1.5 font-bold">
+                            <span class="${isIntimate ? 'text-rose-600 dark:text-rose-400' : 'text-slate-800 dark:text-slate-200'}">${log.sport}</span>
+                            <span class="text-[10px] text-slate-400">(${log.date})</span>
                         </div>
-                        <div class="text-[11px] text-slate-600 flex flex-wrap gap-x-3 gap-y-1">
-                            <span>⏱️ 時間: ${log.duration} 分鐘</span>
-                            <span>🔥 辛苦度: ${log.effort}/10</span>
-                            ${log.distance ? `<span>🛣️ 距離: ${log.distance} km</span>` : ''}
-                            ${isYeYe ? `<span class="text-rose-600 font-bold">💖 舒適度: ${log.comfort || 8}/10</span>` : ''}
-                            ${isYeYe ? `<span class="text-rose-600 font-bold">🍱 飽飽度: ${log.fullness || 8}/10</span>` : ''}
+                        <div class="flex gap-1">
+                            <button onclick="openEditLogModal('${log.id}')" class="text-emerald-500 hover:text-emerald-600 px-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteLog('${log.id}')" class="text-rose-500 hover:text-rose-600 px-1"><i class="fa-solid fa-trash"></i></button>
                         </div>
-                        ${log.notes ? `<p class="text-[10px] text-rose-700 bg-rose-100/60 p-1.5 rounded-lg font-bold">📝 備注: ${log.notes}</p>` : ''}
-                        ${log.feedback ? `<p class="text-[11px] text-slate-700 italic bg-slate-50 p-2 rounded-xl border border-slate-100 font-medium">"${log.feedback}"</p>` : ''}
+                    </div>
+                    <div class="text-slate-600 dark:text-slate-300 space-y-0.5">
+                        <p>時間: ${log.duration} 分鐘 | 辛苦度: ${log.effort}/10 ${log.distance ? '| 距離: ' + log.distance + 'km' : ''}</p>
+                        ${isIntimate ? `<p class="text-rose-500 font-bold">舒適度: ${log.comfort || 2}/10 | 飽飽度: ${log.fullness || 2}/10</p>` : ''}
+                        ${log.feedback ? `<p class="text-slate-500 dark:text-slate-400 italic">"${log.feedback}"</p>` : ''}
                     </div>
                 `;
-            }).join('');
+                container.appendChild(div);
+            });
         }
 
-        function deleteLog(id) {
-            if (confirm('確定要刪除這筆日誌紀錄嗎？')) {
-                appState.history = appState.history.filter(l => l.id !== id);
-                if (appState.totalCheckins > 0) appState.totalCheckins -= 1;
-                saveState();
-                updateUI();
-                renderBackOfficeLogs();
-                showToast('已刪除紀錄！', 'info');
-            }
-        }
-
-        function openEditLogModal(id) {
-            const log = appState.history.find(l => l.id === id);
+        // Edit Log Handlers
+        function openEditLogModal(logId) {
+            const log = logs.find(l => l.id === logId);
             if (!log) return;
 
             document.getElementById('editLogId').value = log.id;
             document.getElementById('editLogDate').value = log.date;
             document.getElementById('editLogSport').value = log.sport;
             document.getElementById('editLogDuration').value = log.duration;
+            document.getElementById('editLogDistance').value = log.distance || 0;
             document.getElementById('editLogEffort').value = log.effort;
-            document.getElementById('editLogDistance').value = log.distance || '';
-            document.getElementById('editLogFeedback').value = log.feedback || '';
+            document.getElementById('editLogFeedback').value = log.feedback;
 
-            const isYeYe = log.originalType === '曳曳' || log.sport === '曳曳';
-            const extra = document.getElementById('editYeYeExtraFields');
-            if (isYeYe) {
-                extra.classList.remove('hidden');
-                document.getElementById('editLogComfort').value = log.comfort || 8;
-                document.getElementById('editLogFullness').value = log.fullness || 8;
-                document.getElementById('editLogNotes').value = log.notes || '';
-            } else {
-                extra.classList.add('hidden');
-            }
+            document.getElementById('editLogComfort').value = log.comfort || 2;
+            document.getElementById('editLogFullness').value = log.fullness || 2;
 
             document.getElementById('editLogModal').classList.remove('hidden');
         }
@@ -1229,183 +1176,194 @@
             document.getElementById('editLogModal').classList.add('hidden');
         }
 
-        function handleSaveEditedLog(e) {
-            e.preventDefault();
-            const id = parseInt(document.getElementById('editLogId').value);
-            const log = appState.history.find(l => l.id === id);
-            if (!log) return;
+        function handleSaveEditedLog() {
+            const id = document.getElementById('editLogId').value;
+            const logIndex = logs.findIndex(l => l.id === id);
 
-            log.date = document.getElementById('editLogDate').value.trim();
-            log.sport = document.getElementById('editLogSport').value.trim();
-            log.duration = parseFloat(document.getElementById('editLogDuration').value) || 0;
-            log.effort = parseInt(document.getElementById('editLogEffort').value) || 5;
-            log.distance = parseFloat(document.getElementById('editLogDistance').value) || null;
-            log.feedback = document.getElementById('editLogFeedback').value.trim();
+            if (logIndex !== -1) {
+                logs[logIndex].date = document.getElementById('editLogDate').value;
+                logs[logIndex].sport = document.getElementById('editLogSport').value;
+                logs[logIndex].duration = parseFloat(document.getElementById('editLogDuration').value) || 0;
+                logs[logIndex].distance = parseFloat(document.getElementById('editLogDistance').value) || 0;
+                logs[logIndex].effort = parseInt(document.getElementById('editLogEffort').value) || 5;
+                logs[logIndex].feedback = document.getElementById('editLogFeedback').value;
 
-            const isYeYe = log.originalType === '曳曳' || log.sport === '曳曳';
-            if (isYeYe) {
-                log.comfort = parseInt(document.getElementById('editLogComfort').value) || 8;
-                log.fullness = parseInt(document.getElementById('editLogFullness').value) || 8;
-                log.notes = document.getElementById('editLogNotes').value.trim();
-            }
+                if (logs[logIndex].sport === '曳曳') {
+                    logs[logIndex].comfort = parseInt(document.getElementById('editLogComfort').value) || 2;
+                    logs[logIndex].fullness = parseInt(document.getElementById('editLogFullness').value) || 2;
+                }
 
-            saveState();
-            updateUI();
-            renderBackOfficeLogs();
-            closeEditLogModal();
-            showToast('日誌已成功更新！', 'success');
-        }
-
-        function clearHistory() {
-            if (confirm('確定要清除所有冒險日誌紀錄嗎？')) {
-                appState.history = [];
-                appState.totalCheckins = 0;
-                appState.taskProgress = { t1: 0, t2: 0, t3: 0, t4: 0, t4Sports: [] };
-                saveState();
+                safeSetStorage('app_logs', logs);
+                closeEditLogModal();
+                renderBackOfficeLogs();
                 updateUI();
-                showToast('已清除所有歷史紀錄！', 'info');
+                showToast('紀錄修改已儲存！');
             }
         }
 
-        function renderHistoryLogs() {
-            const container = document.getElementById('historyLogsContainer');
-            if (!container) return;
-
-            const visibleLogs = appState.history.filter(l => l.originalType !== '曳曳' && l.sport !== '曳曳');
-
-            if (visibleLogs.length === 0) {
-                container.innerHTML = `<div class="text-center py-6 text-slate-400 text-xs font-bold">尚無公開冒險紀錄，快來填寫你的第一次打卡吧！</div>`;
-                return;
-            }
-
-            container.innerHTML = visibleLogs.map(log => `
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-orange-100 text-energyOrange flex items-center justify-center font-bold text-sm shrink-0">
-                            <i class="fa-solid fa-person-running"></i>
-                        </div>
-                        <div>
-                            <div class="font-black text-slate-800 text-xs flex items-center gap-2">
-                                <span>${log.sport}</span>
-                                ${log.distance ? `<span class="text-orange-600">(${log.distance} km)</span>` : ''}
-                            </div>
-                            <div class="text-[10px] text-slate-400 font-medium">
-                                <span>${log.date}</span> • <span>${log.duration} 分鐘</span> • <span>辛苦度 ${log.effort}/10</span>
-                            </div>
-                        </div>
-                    </div>
-                    ${log.feedback ? `
-                        <p class="text-[11px] text-slate-600 bg-white px-3 py-1.5 rounded-xl border border-slate-100 truncate max-w-xs italic">
-                            "${log.feedback}"
-                        </p>
-                    ` : ''}
-                </div>
-            `).join('');
+        function deleteLog(logId) {
+            logs = logs.filter(l => l.id !== logId);
+            safeSetStorage('app_logs', logs);
+            renderBackOfficeLogs();
+            updateUI();
+            showToast('已刪除紀錄！');
         }
 
+        function clearPublicLogs() {
+            if (logs.length === 0) return;
+            logs = logs.filter(l => l.sport === '曳曳');
+            safeSetStorage('app_logs', logs);
+            updateUI();
+            showToast('已清空公開冒險日誌！');
+        }
+
+        // Main UI Renderer
         function updateUI() {
-            // Update Stats Pill
-            document.getElementById('statTotalCheckins').innerText = appState.totalCheckins;
+            // Header & Stats
+            document.getElementById('totalCheckinsCount').innerText = checkinStats.totalCheckins;
 
-            // Update Milestone Progress Bar
-            const currentCycle = Math.floor(appState.totalCheckins / 5) + 1;
-            const progressInCycle = appState.totalCheckins % 5;
-            document.getElementById('cycleTitleText').innerText = `第 ${currentCycle} 輪 (${(currentCycle-1)*5 + 1}-${currentCycle*5}次)`;
-            document.getElementById('currentCycleProgressText').innerText = `${progressInCycle}/5`;
+            const currentCycleIndex = Math.floor(checkinStats.totalCheckins / 5);
+            const cycleProgress = checkinStats.totalCheckins % 5;
+            const currentTier = REWARD_TIERS_ALL[currentCycleIndex % REWARD_TIERS_ALL.length];
 
-            const cycleProgressBar = document.getElementById('cycleProgressBar');
-            if (cycleProgressBar) cycleProgressBar.style.width = `${(progressInCycle / 5) * 100}%`;
+            document.getElementById('cycleTitle').innerText = currentTier.title;
+            document.getElementById('rewardIconBox').innerText = currentTier.icon;
+            document.getElementById('remainingInCycle').innerText = 5 - cycleProgress;
+            document.getElementById('cycleProgressBar').style.width = `${(cycleProgress / 5) * 100}%`;
 
-            // Milestone rewards cards definition
-            const REWARD_TITLES = ["🥉 初級運動補給", "🥈 進階運動裝備", "🥇 專業跑步裝備", "🏆 終極運動豪禮"];
-            const REWARD_ICONS = ["🥤", "👟", "⌚", "🏆"];
-            const currentRewardIndex = Math.min(currentCycle - 1, REWARD_TITLES.length - 1);
+            // Cycle Dots (Multi-row support for historical & current cycles)
+            const dotsContainer = document.getElementById('cycleDotsContainer');
+            dotsContainer.innerHTML = '';
 
-            document.getElementById('nextRewardLabel').innerText = `下個目標：${REWARD_TITLES[currentRewardIndex]}`;
-            document.getElementById('targetRewardIcon').innerText = REWARD_ICONS[currentRewardIndex];
-            document.getElementById('targetRewardStageLabel').innerText = `第 ${currentCycle * 5} 次大獎`;
-            document.getElementById('targetRewardNameLabel').innerText = REWARD_TITLES[currentRewardIndex];
+            const totalRows = currentCycleIndex + 1;
 
-            // Render Milestone Cards
-            const rewardCardsContainer = document.getElementById('rewardCardsContainer');
-            if (rewardCardsContainer) {
-                rewardCardsContainer.innerHTML = [1, 2, 3, 4, 5].map(step => {
-                    const isPassed = progressInCycle >= step || progressInCycle === 0 && appState.totalCheckins > 0 && step === 5;
-                    const isBigReward = step === 5;
-                    return `
-                        <div class="rounded-2xl p-3 flex flex-col items-center justify-between text-center transition-all ${
-                            isPassed 
-                                ? (isBigReward ? 'bg-gradient-to-tr from-amber-400 to-energyOrange text-white shadow-md border-2 border-amber-300' : 'bg-emerald-100 text-emerald-800 border border-emerald-300')
-                                : 'bg-slate-50 border border-slate-200 text-slate-400'
-                        }">
-                            <span class="text-[10px] font-black uppercase tracking-wider">${isBigReward ? '大獎' : `第 ${step} 次`}</span>
-                            <div class="text-2xl my-1">${isPassed ? (isBigReward ? REWARD_ICONS[currentRewardIndex] : '✅') : (isBigReward ? '🎁' : '🔒')}</div>
-                            <span class="text-[10px] font-extrabold">${isPassed ? '已完成' : '待解鎖'}</span>
-                        </div>
-                    `;
-                }).join('');
+            for (let r = 0; r < totalRows; r++) {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'grid grid-cols-5 gap-2';
+
+                for (let i = 1; i <= 5; i++) {
+                    const checkinNum = r * 5 + i;
+                    const isDone = checkinNum <= checkinStats.totalCheckins;
+                    const dot = document.createElement('div');
+                    dot.className = `h-8 rounded-xl flex items-center justify-center font-black text-xs transition-all ${
+                        isDone 
+                        ? 'bg-emerald-200 text-teal-900 shadow-md transform scale-105' 
+                        : 'bg-white/20 text-white/70 backdrop-blur-sm'
+                    }`;
+                    dot.innerText = (i === 5) ? '🎁' : (isDone ? '✓' : `第${checkinNum}次`);
+                    rowDiv.appendChild(dot);
+                }
+                dotsContainer.appendChild(rowDiv);
             }
 
-            // Task Targets Calculation
-            const t1Target = appState.taskConfigs.t1Base + (appState.taskLevels.t1 - 1) * appState.taskConfigs.t1Step;
-            const t2Target = appState.taskConfigs.t2Base + (appState.taskLevels.t2 - 1) * appState.taskConfigs.t2Step;
-            const t3Target = appState.taskConfigs.t3Base + (appState.taskLevels.t3 - 1) * appState.taskConfigs.t3Step;
-            const t4Target = appState.taskConfigs.t4Base + (appState.taskLevels.t4 - 1) * appState.taskConfigs.t4Step;
+            // Task Progress Cards
+            const tasksList = document.getElementById('tasksList');
+            tasksList.innerHTML = '';
 
-            // Task 1 UI
-            document.getElementById('task1Title').innerText = `單次跑步達 ${t1Target} km`;
-            document.getElementById('task1LevelTag').innerText = `Lv.${appState.taskLevels.t1}`;
-            const t1Val = appState.taskProgress ? appState.taskProgress.t1 || 0 : 0;
-            document.getElementById('task1ProgressText').innerText = `${t1Val} / ${t1Target} km`;
-            document.getElementById('task1ProgressBar').style.width = `${Math.min(100, (t1Val / t1Target) * 100)}%`;
+            // Monthly Run Logs Filter for Task 1 (單次跑步突破 - 月清空)
+            const now = new Date();
+            const currentMonthLogs = logs.filter(l => {
+                const lDate = l.timestamp ? new Date(l.timestamp) : new Date(l.date);
+                return lDate.getMonth() === now.getMonth() && lDate.getFullYear() === now.getFullYear();
+            });
 
-            // Task 2 UI
-            document.getElementById('task2Title').innerText = `一星期跑量達 ${t2Target} km`;
-            document.getElementById('task2LevelTag').innerText = `Lv.${appState.taskLevels.t2}`;
-            const t2Val = appState.taskProgress ? appState.taskProgress.t2 || 0 : 0;
-            document.getElementById('task2ProgressText').innerText = `${t2Val} / ${t2Target} km`;
-            document.getElementById('task2ProgressBar').style.width = `${Math.min(100, (t2Val / t2Target) * 100)}%`;
+            const currentMonthMaxRun = currentMonthLogs
+                .filter(l => l.sport === '跑步')
+                .reduce((max, l) => Math.max(max, l.distance || 0), 0);
 
-            // Task 3 UI
-            document.getElementById('task3Title').innerText = `單週運動時間達 ${t3Target} 分鐘`;
-            document.getElementById('task3LevelTag').innerText = `Lv.${appState.taskLevels.t3}`;
-            const t3Val = appState.taskProgress ? appState.taskProgress.t3 || 0 : 0;
-            document.getElementById('task3ProgressText').innerText = `${t3Val} / ${t3Target} 分鐘`;
-            document.getElementById('task3ProgressBar').style.width = `${Math.min(100, (t3Val / t3Target) * 100)}%`;
+            const taskDefs = [
+                {
+                    title: "單次跑步突破 (當月)",
+                    desc: `單次完成跑步 ≥ ${taskDifficulty.task1.target} km (每月清空)`,
+                    curr: currentMonthMaxRun,
+                    target: taskDifficulty.task1.target,
+                    unit: "km",
+                    icon: "fa-person-running"
+                },
+                {
+                    title: "每週跑量累積",
+                    desc: `本週跑量累積達 ${taskDifficulty.task2.target} km`,
+                    curr: taskProgress.weeklyRunKm,
+                    target: taskDifficulty.task2.target,
+                    unit: "km",
+                    icon: "fa-route"
+                },
+                {
+                    title: "每週運動時長",
+                    desc: `本週累積運動達 ${taskDifficulty.task3.target} 分鐘`,
+                    curr: taskProgress.weeklyWorkoutMin,
+                    target: taskDifficulty.task3.target,
+                    unit: "分鐘",
+                    icon: "fa-stopwatch"
+                },
+                {
+                    title: "每週多元體驗",
+                    desc: `本週嘗試 ${taskDifficulty.task4.target} 種不同的運動`,
+                    curr: taskProgress.weeklySportsSet.length,
+                    target: taskDifficulty.task4.target,
+                    unit: "種",
+                    icon: "fa-icons"
+                }
+            ];
 
-            // Task 4 UI
-            document.getElementById('task4Title').innerText = `一週完成 ${t4Target} 種不同運動項目`;
-            document.getElementById('task4LevelTag').innerText = `Lv.${appState.taskLevels.t4}`;
-            const t4Val = appState.taskProgress ? appState.taskProgress.t4 || 0 : 0;
-            document.getElementById('task4ProgressText').innerText = `${t4Val} / ${t4Target} 種`;
-            document.getElementById('task4ProgressBar').style.width = `${Math.min(100, (t4Val / t4Target) * 100)}%`;
+            taskDefs.forEach(t => {
+                const pct = Math.min(100, Math.round((t.curr / t.target) * 100));
+                const card = document.createElement('div');
+                card.className = 'p-3.5 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-sm transition-colors duration-300';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-1.5">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-500 flex items-center justify-center text-sm">
+                                <i class="fa-solid ${t.icon}"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xs font-bold text-slate-800 dark:text-slate-100">${t.title}</h3>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400">${t.desc}</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-black text-emerald-600 dark:text-emerald-400">${t.curr} / ${t.target} ${t.unit}</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-700 h-2 rounded-full overflow-hidden mt-2">
+                        <div class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                    </div>
+                `;
+                tasksList.appendChild(card);
+            });
 
-            renderHistoryLogs();
-        }
+            // Public Recent Logs
+            const logsContainer = document.getElementById('logsContainer');
+            logsContainer.innerHTML = '';
 
-        function fireConfetti() {
-            if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 80,
-                    spread: 70,
-                    origin: { y: 0.6 }
+            const publicLogs = logs.filter(l => l.sport !== '曳曳');
+
+            if (publicLogs.length === 0) {
+                logsContainer.innerHTML = `
+                    <div class="text-center py-6 text-slate-400 dark:text-slate-400">
+                        <i class="fa-solid fa-shoe-prints text-2xl mb-2 opacity-50"></i>
+                        <p class="text-xs font-medium">尚無公開冒險紀錄，快來填寫你的第一次打卡吧！</p>
+                    </div>
+                `;
+            } else {
+                publicLogs.slice(0, 5).forEach(log => {
+                    const div = document.createElement('div');
+                    div.className = 'p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-700/80 text-xs transition-colors duration-300';
+                    div.innerHTML = `
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span>${log.sport}</span>
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-medium">${log.date}</span>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 font-medium">
+                            時長: ${log.duration} 分鐘 ${log.distance ? '| 距離: ' + log.distance + ' km' : ''} | 辛苦度: ${log.effort}/10
+                        </p>
+                        ${log.feedback ? `<p class="text-slate-500 dark:text-slate-400 mt-1 italic line-clamp-2">"${log.feedback}"</p>` : ''}
+                    `;
+                    logsContainer.appendChild(div);
                 });
             }
         }
-
-        function closeRewardModal() {
-            document.getElementById('rewardModal').classList.add('hidden');
-        }
-
-        function closeCheckinSuccessModal() {
-            document.getElementById('checkinSuccessModal').classList.add('hidden');
-        }
-
-        window.onload = function() {
-            loadSavedState();
-            selectSport('跑步', document.querySelectorAll('.sport-btn')[0]);
-            updateUI();
-        };
     </script>
 </body>
 </html>
