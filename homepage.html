@@ -46,6 +46,67 @@
       outline: none;
     }
 
+    /* Floating Fire Button (Fixed Top-Right) */
+    .floating-fire-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      height: 52px;
+      min-width: 52px;
+      padding: 0 12px;
+      border: 2px dashed rgba(255, 255, 255, 0.7);
+      border-radius: 26px;
+      color: #fff;
+      /* Rough textured background */
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(217, 74, 58, 0.9), transparent 70%),
+        radial-gradient(circle at 70% 70%, rgba(181, 59, 48, 0.95), transparent 70%),
+        rgba(18, 58, 51, 0.85);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 0 8px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      user-select: none;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .floating-fire-btn .fire-icon {
+      font-size: 24px;
+      transition: transform 0.3s ease;
+    }
+
+    .floating-fire-btn .fire-text {
+      display: none;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-left: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Hover State Transformation */
+    .floating-fire-btn:hover {
+      background: var(--red);
+      border: 2px solid #ffffff;
+      padding: 0 16px;
+      box-shadow: 0 8px 25px rgba(217, 74, 58, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .floating-fire-btn:hover .fire-icon {
+      font-size: 20px;
+      transform: scale(1.1);
+    }
+
+    .floating-fire-btn:hover .fire-text {
+      display: inline-block;
+    }
+
     .footline{justify-content:flex-start;gap:14px;margin-top:14px}.footline i{width:90px;height:1px;background:var(--red)}
     .facts{display:grid;grid-template-columns:1.35fr repeat(3,1fr);padding:34px clamp(20px,7vw,112px);color:var(--light);background:var(--deep)}.fact-intro{display:grid;gap:10px;padding-right:40px;border-right:1px solid #ffffff30}.fact-intro .kicker{color:#e26c5a}.fact-intro p{max-width:170px;margin:0;font:22px/1.25 'Fraunces',serif}.fact{display:flex;gap:15px;padding:4px 30px;border-right:1px solid #ffffff30}.fact:last-child{border:0}.fact svg{color:#e26c5a;margin-top:4px}.fact div{display:grid;gap:4px}.fact span,.fact small{color:#ffffffa6;font-size:10px}.fact strong{font:24px/1.1 'Fraunces',serif}
 
@@ -140,6 +201,13 @@
   </style>
 </head>
 <body>
+
+  <!-- Floating Fire Button at Right Top Corner of Window -->
+  <a class="floating-fire-btn" href="./workoutcheckin.html" aria-label="做運動打卡">
+    <span class="fire-icon">🔥</span>
+    <span class="fire-text">做運動打卡</span>
+  </a>
+
   <header class="header">
     <a class="brand" href="#top" aria-label="走進美山暨小謙謙慈善跑首頁"><span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M5 24 10 9l6 10 6-14 5 19" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="24.5" cy="24" r="2.2" fill="#d94a3a"/></svg></span><span class="brand-text"><strong>走進美山</strong><small>CHARITY RUN · LITTLE TAM TAM</small></span></a>
     <nav class="nav" aria-label="主選單">
