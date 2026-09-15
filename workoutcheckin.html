@@ -699,6 +699,7 @@
         // Initialize on load
         window.addEventListener('DOMContentLoaded', () => {
             checkWeeklyReset();
+            recalculateStatsFromLogs();
             setTheme(currentTheme);
             updateCharCount();
             updateUI();
@@ -713,13 +714,61 @@
             return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
         }
 
+        // 根據現有紀錄重新計算所有統計數據與任務進度
+        function recalculateStatsFromLogs() {
+            checkinStats.totalCheckins = logs.length;
+
+            const now = new Date();
+            const currentISOWeek = getISOWeek(now);
+            const currentYear = now.getFullYear();
+
+            let weeklyRunKm = 0;
+            let weeklyWorkoutMin = 0;
+            const sportsSet = new Set();
+
+            logs.forEach(log => {
+                const logDate = getLogDateObject(log);
+                const logISOWeek = getISOWeek(logDate);
+                const logYear = logDate.getFullYear();
+
+                if (logISOWeek === currentISOWeek && logYear === currentYear) {
+                    if (log.sport === '跑步') {
+                        weeklyRunKm += (parseFloat(log.distance) || 0);
+                    }
+                    weeklyWorkoutMin += (parseFloat(log.duration) || 0);
+                    if (log.sport) {
+                        sportsSet.add(log.sport);
+                    }
+                }
+            });
+
+            taskProgress.weeklyRunKm = Math.round(weeklyRunKm * 10) / 10;
+            taskProgress.weeklyWorkoutMin = Math.round(weeklyWorkoutMin);
+            taskProgress.weeklySportsSet = Array.from(sportsSet);
+
+            safeSetStorage('app_checkin_stats', checkinStats);
+            safeSetStorage('app_task_progress', taskProgress);
+        }
+
+        function getLogDateObject(log) {
+            if (log.timestamp) {
+                const d = new Date(log.timestamp);
+                if (!isNaN(d.getTime())) return d;
+            }
+            if (log.date) {
+                const d = new Date(log.date);
+                if (!isNaN(d.getTime())) return d;
+            }
+            return new Date();
+        }
+
         // Automatic Weekly Reset Check (Mondays) & Monthly Reset
         function checkWeeklyReset() {
             const now = new Date();
             const currentWeek = getISOWeek(now);
             const currentMonth = now.getMonth();
 
-            // Monthly Reset Check: 單次跑步突破 只會以月而清空
+            // Monthly Reset Check
             if (checkinStats.lastResetMonth !== currentMonth) {
                 checkinStats.lastResetMonth = currentMonth;
             }
@@ -864,26 +913,10 @@
                 fullness: currentSport === '曳曳' ? parseInt(document.getElementById('fullnessInput').value) : null
             };
 
-            // Save log
+            // Save log & Recalculate
             logs.unshift(newLog);
             safeSetStorage('app_logs', logs);
-
-            // Update Total Checkin Count
-            checkinStats.totalCheckins += 1;
-
-            // Update Task Progress
-            if (['跑步', '單車', '行山'].includes(currentSport)) {
-                if (currentSport === '跑步') {
-                    taskProgress.weeklyRunKm += distance;
-                }
-            }
-            taskProgress.weeklyWorkoutMin += duration;
-            if (!taskProgress.weeklySportsSet.includes(finalSportName)) {
-                taskProgress.weeklySportsSet.push(finalSportName);
-            }
-
-            safeSetStorage('app_task_progress', taskProgress);
-            safeSetStorage('app_checkin_stats', checkinStats);
+            recalculateStatsFromLogs();
 
             // Check Tasks
             if (currentSport === '跑步' && distance >= taskDifficulty.task1.target) {
@@ -1181,7 +1214,12 @@
             const logIndex = logs.findIndex(l => l.id === id);
 
             if (logIndex !== -1) {
-                logs[logIndex].date = document.getElementById('editLogDate').value;
+                const newDateStr = document.getElementById('editLogDate').value;
+                logs[logIndex].date = newDateStr;
+                const parsedDate = new Date(newDateStr);
+                if (!isNaN(parsedDate.getTime())) {
+                    logs[logIndex].timestamp = parsedDate.getTime();
+                }
                 logs[logIndex].sport = document.getElementById('editLogSport').value;
                 logs[logIndex].duration = parseFloat(document.getElementById('editLogDuration').value) || 0;
                 logs[logIndex].distance = parseFloat(document.getElementById('editLogDistance').value) || 0;
@@ -1194,27 +1232,30 @@
                 }
 
                 safeSetStorage('app_logs', logs);
+                recalculateStatsFromLogs();
                 closeEditLogModal();
                 renderBackOfficeLogs();
                 updateUI();
-                showToast('紀錄修改已儲存！');
+                showToast('紀錄修改已儲存並重新計算數據！');
             }
         }
 
         function deleteLog(logId) {
             logs = logs.filter(l => l.id !== logId);
             safeSetStorage('app_logs', logs);
+            recalculateStatsFromLogs();
             renderBackOfficeLogs();
             updateUI();
-            showToast('已刪除紀錄！');
+            showToast('已刪除紀錄並重新計算數據！');
         }
 
         function clearPublicLogs() {
             if (logs.length === 0) return;
             logs = logs.filter(l => l.sport === '曳曳');
             safeSetStorage('app_logs', logs);
+            recalculateStatsFromLogs();
             updateUI();
-            showToast('已清空公開冒險日誌！');
+            showToast('已清空公開冒險日誌並重新計算數據！');
         }
 
         // Main UI Renderer
