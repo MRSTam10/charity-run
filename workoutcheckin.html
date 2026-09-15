@@ -6,8 +6,8 @@
     <title>姍姍一定做得島 🏃‍♂️⚡ - 運動冒險簽到島</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome Icons (Updated CDN version) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Canvas Confetti Library for Celebrations -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <!-- Google Fonts -->
@@ -24,7 +24,7 @@
                         sunnyBg: '#F0FDF4',
                     },
                     fontFamily: {
-                        sans: ['Outfit', 'Noto Sans TC', 'sans-serif'],
+                        sans: ['Outfit', 'Noto Sans TC', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', 'sans-serif'],
                     }
                 }
             }
@@ -34,6 +34,7 @@
         body {
             background: linear-gradient(135deg, #E0F2FE 0%, #DCFCE7 50%, #FEF9C3 100%);
             min-height: 100vh;
+            font-family: 'Outfit', 'Noto Sans TC', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
         }
         .card-shadow {
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
@@ -403,15 +404,15 @@
                     </div>
                 </div>
 
-                <!-- Feedback Textarea -->
-                <div id="feedbackContainer" class="block">
+                <!-- Feedback Textarea (Only visible & required for '曳曳') -->
+                <div id="feedbackContainer" class="hidden">
                     <div class="flex justify-between items-center mb-1">
-                        <label class="block text-xs font-extrabold text-slate-700 uppercase tracking-wider">
-                            <i class="fa-solid fa-comment-dots text-purple-500"></i> 心得 / 意見 (最少 10 個字) <span class="text-red-500">*</span>
+                        <label class="block text-xs font-extrabold text-rose-700 uppercase tracking-wider">
+                            <i class="fa-solid fa-comment-dots text-rose-500"></i> 親密心得 / 意見 (最少 10 個字) <span class="text-red-500">*</span>
                         </label>
                         <span id="charCountLabel" class="text-xs font-bold text-slate-400">0 / 10 字</span>
                     </div>
-                    <textarea id="feedbackInput" rows="3" oninput="updateCharCount()" placeholder="分享今天寶貴的感覺與心得吧...(至少需要 10 個字喔！)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"></textarea>
+                    <textarea id="feedbackInput" rows="3" oninput="updateCharCount()" placeholder="分享今天寶貴的感覺與心得吧...(至少需要 10 個字喔！)" class="w-full bg-rose-50/50 border border-rose-200 rounded-xl p-3 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none"></textarea>
                     <p id="validationMsg" class="hidden text-xs text-red-500 font-bold mt-1 flex items-center gap-1">
                         <i class="fa-solid fa-circle-exclamation"></i> 請輸入至少 10 個字的感受心得喔！
                     </p>
@@ -922,10 +923,16 @@
             const otherContainer = document.getElementById('otherSportFieldContainer');
             const distanceContainer = document.getElementById('distanceFieldContainer');
             const yeYeContainer = document.getElementById('yeYeFieldsContainer');
+            const feedbackContainer = document.getElementById('feedbackContainer');
 
             otherContainer.classList.toggle('hidden', sportName !== '其他');
             distanceContainer.classList.toggle('hidden', !['跑步', '單車', '行山'].includes(sportName));
             yeYeContainer.classList.toggle('hidden', sportName !== '曳曳');
+            
+            // Only show feedback field when sport is '曳曳'
+            if (feedbackContainer) {
+                feedbackContainer.classList.toggle('hidden', sportName !== '曳曳');
+            }
 
             const distanceInput = document.getElementById('distanceInput');
             if (['跑步', '單車', '行山'].includes(sportName)) {
@@ -955,9 +962,13 @@
             }
 
             const feedback = document.getElementById('feedbackInput').value.trim();
-            if (feedback.length < 10) {
-                document.getElementById('validationMsg').classList.remove('hidden');
-                return;
+            
+            // Only validate feedback length (min 10 characters) if the sport type is '曳曳'
+            if (sportType === '曳曳') {
+                if (feedback.length < 10) {
+                    document.getElementById('validationMsg').classList.remove('hidden');
+                    return;
+                }
             }
 
             let displaySport = sportType;
